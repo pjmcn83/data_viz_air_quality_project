@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <title>Global PM2.5 Dashboard | H3 Analysis</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet">
+    
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            width: 100vw; height: 100vh; overflow: hidden;
+            background: #07090f; font-family: 'Space Grotesk', sans-serif;
+            color: #e2e8f0; display: flex; flex-direction: column;
+        }
+
+        #map { 
+            flex: 1; position: relative; width: 100%; 
+            transition: flex 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        #console {
+            position: absolute; top: 1.2rem; left: 1.2rem; 
+            width: 270px; /* Narrowed */
+            background: rgba(7, 9, 15, 0.92); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            padding: 1rem;
+            z-index: 10; display: flex; flex-direction: column; 
+            gap: 0.8rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .label-tiny { font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.1rem; }
+        #active-year { font-size: 1.2rem; font-weight: 700; color: #3b82f6; font-family: 'Space Mono'; }
+        .country-name { font-size: 0.95rem; font-weight: 600; color: #fff; display: block; line-height: 1.2; }
+        .h3-index { font-size: 0.6rem; color: #475569; font-family: 'Space Mono'; }
+        .pm-val { font-size: 1.1rem; font-weight: 700; color: #fff; }
+
+        /* ── Bottom Panel Layout for time series chart ── */
+        #bottom-panel {
+            height: 0; width: 100%; background: rgba(7, 9, 15, 0.98);
+            border-top: 0px solid rgba(255, 255, 255, 0.1);
+            padding: 0 2.5rem; overflow: hidden;
+            display: flex; gap: 2.5rem;
+            transition: height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        #bottom-panel.visible { 
+            height: 26vh; padding: 1.2rem 2.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        #chart-info-sidebar {
+            flex: 0 0 160px; display: flex; flex-direction: column;
+            justify-content: center; border-right: 1px solid rgba(255,255,255,0.05);
+        }
+
+        #chart-container { flex: 1; height: 100%; min-width: 0; }
+
+        .stat-huge { font-size: 2rem; font-weight: 700; font-family: 'Space Mono'; line-height: 1; }
+        .stat-label { font-size: 0.55rem; color: #64748b; text-transform: uppercase; margin-top: 0.3rem; letter-spacing: 0.08em; }
+
+        .slider { width: 100%; accent-color: #3b82f6; cursor: pointer; margin: 0.4rem 0; height: 4px; border-radius: 2px; }
+        
+        .button {
+            background: #1e293b; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.5rem; cursor: pointer; font-family: 'Space Mono'; font-size: 0.65rem;
+            text-transform: uppercase; letter-spacing: 0.5px; transition: 0.2s;
+        }
+        .button:hover { background: #334155; color: #fff; }
+        .button.playing { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+
+        .legend-bar { width: 100%; height: 6px; background: linear-gradient(to right, #009966, #f1d300, #f18b00, #ff0000, #7e0023); border-radius: 1px; margin: 0.3rem 0; }
+        .scale-labels { display: flex; justify-content: space-between; font-size: 0.55rem; color: #64748b; font-family: 'Space Mono'; }
+        .flex-row { display: flex; align-items: center; justify-content: space-between; }
+    </style>
+</head>
+
+<body>
+<div id="map">
+    <div id="console">
+        <div id="geo-info">
+            <div class="label-tiny">Focus Area</div>
+            <span class="country-name" id="display-country">Global View</span>
+            <span class="h3-index" id="display-h3">Select cell to start</span>
+        </div>
+
+        <div id="timeline-group">
+            <div class="flex-row">
+                <span id="active-year">1998</span>
+                <span class="pm-val" id="display-pm">—</span>
+            </div>
+            <input id="slider" class="slider" type="range" min="1998" max="2022" step="1" value="1998" />
+            <div style="display: flex; gap: 0.4rem; margin-top: 0.2rem;">
+                <button id="play-button" class="button" style="flex: 2;">▶ Play</button>
+                <button id="refresh-button" class="button" style="flex: 1;">↺ Reset</button>
+            </div>
+        </div>
+
+        <div id="scale">
+            <div class="label-tiny">µg/m³ Concentration</div>
+            <div class="legend-bar"></div>
+            <div class="scale-labels"><span>0</span><span>12</span><span>35</span><span>55</span><span>100+</span></div>
+        </div>
+    </div>
+</div>
+
+<div id="bottom-panel">
+    <div id="chart-info-sidebar">
+        <div id="summary-stat" class="stat-huge">—</div>
+        <div class="stat-label">Total change since '98</div>
+        <div id="trend-summary-label" class="label-tiny" style="margin-top: 1rem; color: #475569;">Analysis pending...</div>
+    </div>
+    <div id="chart-container">
+        <canvas id="trendChart"></canvas>
+    </div>
+</div>
+
+<script>
+    // ── Configuration ──
+    const MAP_DEFAULTS = { center: [-30, -10], zoom: 1.5 };
+    const YEARS = Array.from({ length: 25 }, (_, i) => 1998 + i);
+    const countryCache = {}; 
+
+    const ui = {
+        country: document.getElementById('display-country'),
+        h3: document.getElementById('display-h3'),
+        pm: document.getElementById('display-pm'),
+        yearLabel: document.getElementById('active-year'),
+        slider: document.getElementById('slider'),
+        panel: document.getElementById('bottom-panel'),
+        playBtn: document.getElementById('play-button'),
+        summaryStat: document.getElementById('summary-stat'),
+        trendLabel: document.getElementById('trend-summary-label')
+    };
+
+    let averagesData = null, currentYear = 1998, isPlaying = false, timer = null, trendChart = null, activeProperties = null;
+
+    fetch('./data/pm25_averages.json').then(res => res.json()).then(data => { averagesData = data; });
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZW1pbHlkdWdtb3JlIiwiYSI6ImNta285NjZiZzAzMzQza3M5ZmRodHp6ZDcifQ.geVyLy4fYjBWRAGJSbwN-g';
+    
+    const colorExpression = (year) => [
+        'interpolate', ['linear'], ['coalesce', ['get', `pm25_${year}`], 0],
+        0, '#009966', 12, '#f1d300', 35, '#f18b00', 55, '#ff0000', 100, '#7e0023'
+    ];
+
+    const map = new mapboxgl.Map({
+        container: 'map', style: 'mapbox://styles/mapbox/dark-v11',
+        center: MAP_DEFAULTS.center, zoom: MAP_DEFAULTS.zoom, projection: 'mercator'
+    });
+
+    // ── Helpers ──
+    function geoBounds(geometry) {
+        let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
+        const rings = geometry.type === 'Polygon' ? geometry.coordinates : geometry.coordinates.flat();
+        for (const ring of rings) {
+            for (const [lng, lat] of ring) {
+                minLng = Math.min(minLng, lng); minLat = Math.min(minLat, lat);
+                maxLng = Math.max(maxLng, lng); maxLat = Math.max(maxLat, lat);
+            }
+        }
+        return [[minLng, minLat], [maxLng, maxLat]];
+    }
+
+    function calculateTrendline(data) {
+        const n = data.length;
+        let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+        data.forEach((y, x) => {
+            sumX += x; sumY += y;
+            sumXY += x * y; sumXX += x * x;
+        });
+        const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
+        const intercept = (sumY - slope * sumX) / n;
+        return { values: data.map((_, x) => slope * x + intercept), slope };
+    }
+
+    function updateUI() {
+        if (!activeProperties) return;
+        ui.country.textContent = `${activeProperties.C_name} (${activeProperties.C_abb})`;
+        ui.h3.textContent = `H3: ${activeProperties.h3_index}`;
+        
+        const val = activeProperties[`pm25_${currentYear}`];
+        ui.pm.innerHTML = val ? `${parseFloat(val).toFixed(1)} <small style="font-size:0.5rem; color:#64748b;">µg</small>` : '—';
+
+        const v98 = parseFloat(activeProperties.pm25_1998 || 0), v22 = parseFloat(activeProperties.pm25_2022 || 0);
+        const diff = v22 - v98, per = v98 !== 0 ? (diff / v98 * 100).toFixed(0) : 0;
+        
+        ui.summaryStat.textContent = `${per > 0 ? '+' : ''}${per}%`;
+        ui.summaryStat.style.color = diff > 0 ? '#fca5a5' : '#86efac';
+    }
+
+    function updateYear(year) {
+        currentYear = parseInt(year);
+        ui.yearLabel.textContent = currentYear;
+        ui.slider.value = currentYear;
+        if (map.getLayer('pm25-layer')) map.setPaintProperty('pm25-layer', 'fill-color', colorExpression(currentYear));
+        updateUI(); 
+        if (trendChart) trendChart.update('none');
+    }
+
+    // ── Map Setup ──
+    map.on('load', () => {
+        map.addSource('pm25-data', { type: 'geojson', data: './data/pm25_hex_grid_processed.geojson' });
+        map.addSource('countries', { type: 'vector', url: 'mapbox://emilydugmore.48mjdbxk' });
+
+        map.addLayer({
+            id: 'country-hover', type: 'fill', source: 'countries', 'source-layer': 'country_data',
+            filter: ['==', ['get', 'C_abb'], ''],
+            paint: { 'fill-color': '#fff', 'fill-opacity': 0.12 }
+        });
+
+        map.addLayer({
+            id: 'pm25-layer', type: 'fill', source: 'pm25-data',
+            paint: { 'fill-color': colorExpression(currentYear), 'fill-opacity': 0.6, 'fill-outline-color': 'rgba(255,255,255,0.05)' }
+        });
+
+        map.addLayer({
+            id: 'country-selected-outline', type: 'line', source: 'countries', 'source-layer': 'country_data',
+            filter: ['==', ['get', 'C_abb'], ''],
+            paint: { 'line-color': '#fff', 'line-width': 3, 'line-opacity': 0.8, 'line-blur': 1, 'line-emissive-strength': 0.8 }
+        });
+
+        map.addLayer({
+            id: 'pm25-highlight', type: 'line', source: 'pm25-data',
+            filter: ['==', ['get', 'h3_index'], ''],
+            paint: { 'line-color': '#3b82f6', 'line-width': 2.5, 'line-emissive-strength': 1.0 }
+        });
+
+        map.on('mousemove', 'pm25-layer', (e) => {
+            if (!e.features.length) return;
+            map.getCanvas().style.cursor = 'crosshair';
+            map.setFilter('country-hover', ['==', ['get', 'C_abb'], e.features[0].properties.C_abb || '']);
+        });
+
+        map.on('mouseleave', 'pm25-layer', () => {
+            map.getCanvas().style.cursor = '';
+            map.setFilter('country-hover', ['==', ['get', 'C_abb'], '']);
+        });
+
+        map.on('click', 'pm25-layer', (e) => {
+            if (!e.features.length) return;
+            activeProperties = e.features[0].properties;
+            const abb = activeProperties.C_abb;
+
+            ui.panel.classList.add('visible');
+            map.setFilter('pm25-highlight', ['==', ['get', 'h3_index'], activeProperties.h3_index]);
+            map.setFilter('country-selected-outline', ['==', ['get', 'C_abb'], abb]);
+
+            let bounds = null;
+            const fragments = map.querySourceFeatures('countries', { sourceLayer: 'country_data', filter: ['==', ['get', 'C_abb'], abb] });
+            fragments.forEach(feat => {
+                const b = geoBounds(feat.geometry);
+                if (!bounds) bounds = b;
+                else {
+                    bounds[0][0] = Math.min(bounds[0][0], b[0][0]); bounds[0][1] = Math.min(bounds[0][1], b[0][1]);
+                    bounds[1][0] = Math.max(bounds[1][0], b[1][0]); bounds[1][1] = Math.max(bounds[1][1], b[1][1]);
+                }
+            });
+
+            map.fitBounds(bounds || geoBounds(e.features[0].geometry), { 
+                padding: { top: 40, bottom: 220, left: 40, right: 40 }, duration: 1400, maxZoom: 8 
+            });
+
+            setTimeout(() => map.resize(), 500);
+            updateUI(); updateChart(activeProperties);
+        });
+
+        startAnimation();
+    });
+
+    // ── Interaction Logic ──
+    ui.slider.addEventListener('input', (e) => { stopAnimation(); updateYear(e.target.value); });
+    ui.playBtn.addEventListener('click', () => isPlaying ? stopAnimation() : startAnimation());
+    
+    document.getElementById('refresh-button').addEventListener('click', () => {
+        stopAnimation(); activeProperties = null;
+        ui.panel.classList.remove('visible');
+        map.setFilter('pm25-highlight', ['==', ['get', 'h3_index'], '']);
+        map.setFilter('country-selected-outline', ['==', ['get', 'C_abb'], '']);
+        setTimeout(() => map.resize(), 500);
+        map.flyTo({ ...MAP_DEFAULTS, zoom: 1.5 });
+    });
+
+    function startAnimation() {
+        isPlaying = true; ui.playBtn.textContent = '⏸ Pause'; ui.playBtn.classList.add('playing');
+        timer = setInterval(() => updateYear(currentYear >= 2022 ? 1998 : currentYear + 1), 600);
+    }
+
+    function stopAnimation() {
+        isPlaying = false; ui.playBtn.textContent = '▶ Play'; ui.playBtn.classList.remove('playing');
+        clearInterval(timer);
+    }
+
+    function updateChart(props) {
+        console.log("averagesData:", averagesData);
+        const localData = YEARS.map(y => parseFloat(props[`pm25_${y}`] || 0));
+        const trend = calculateTrendline(localData);
+        ui.trendLabel.textContent = trend.slope > 0 ? "Condition: Worsening" : "Condition: Improving";
+        ui.trendLabel.style.color = trend.slope > 0 ? '#fca5a5' : '#86efac';
+        const countryData = (averagesData && averagesData.countries) ? averagesData.countries[props.C_abb] : [];
+        const continentData = (averagesData && averagesData.continents) ? averagesData.continents[props.continent] : [];
+
+        const datasets = [
+            { label: `Local PM2.5`, data: localData, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3 },
+            { label: `Trendline`, data: trend.values, borderColor: '#93c5fd', borderWidth: 1, borderDash: [4, 4], pointRadius: 0, fill: false },
+            { label: `${props.C_name} Avg`, data: countryData, borderColor: '#22c55e', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.25 },
+            { label: `${props.continent} Avg`, data: continentData, borderColor: '#fbbf24', borderWidth: 1.5, borderDash: [8, 5], borderDashOffset: 2, pointRadius: 0, fill: false, tension: 0.25 }
+        ];
+
+        if (trendChart) {
+            trendChart.data.datasets = datasets;
+            trendChart.update();
+        } else {
+            trendChart = new Chart(document.getElementById('trendChart').getContext('2d'), {
+                type: 'line', data: { labels: YEARS, datasets },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: {mode: 'index', intersect: false,},
+                    plugins: { 
+                        tooltip: {enabled: true, backgroundColor: 'rgba(7, 9, 15, 0.9)', titleFont: { family: 'Space Mono', size: 12 }, bodyFont: { family: 'Space Grotesk', size: 11 }, padding: 10, borderColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1},
+                        legend: { display: true, position: 'top', align: 'end', labels: { color: '#64748b', font: { size: 9, family: 'Space Mono' }, boxWidth: 10 } } },
+                    scales: { 
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+                        y: { position: 'right', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 9 } } }
+                    }
+                }
+            });
+        }
+    }
+</script>
+</body>
+</html>

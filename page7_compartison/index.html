@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>City Comparison</title>
+    <link rel="stylesheet" href="../page7_compartison/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <script src="main.js"></script>
+  </head>
+  <body>
+ 
+    <div id="app">
+ 
+      <!-- PANEL 1 -->
+      <div class="panel" id="panel-1">
+        <div class="selectors">
+          <div class="select-group">
+            <label for="region-1">Region</label>
+            <select id="region-1"></select>
+          </div>
+          <div class="select-group">
+            <label for="country-1">Country</label>
+            <select id="country-1"></select>
+          </div>
+          <div class="select-group">
+            <label for="city-1">City</label>
+            <select id="city-1"></select>
+          </div>
+        </div>
+ 
+        <div class="badge" id="badge-1">
+          <div class="badge-left">
+            <span class="badge-dot dot-1"></span>
+            <div class="badge-info">
+              <div class="badge-city" id="badge-city-1">—</div>
+              <div class="badge-meta" id="badge-meta-1">Select a city</div>
+            </div>
+          </div>
+          <div class="badge-right">
+            <div class="badge-score" id="badge-score-1">—</div>
+            <div class="badge-label">INDEX</div>
+            <div class="badge-bar"><div class="badge-bar-fill"></div></div>
+          </div>
+        </div>
+ 
+        <div class="chart-area" id="chart-1"></div>
+      </div>
+ 
+      <!-- PANEL 2 -->
+      <div class="panel" id="panel-2">
+        <div class="selectors">
+          <div class="select-group">
+            <label for="region-2">Region</label>
+            <select id="region-2"></select>
+          </div>
+          <div class="select-group">
+            <label for="country-2">Country</label>
+            <select id="country-2"></select>
+          </div>
+          <div class="select-group">
+            <label for="city-2">City</label>
+            <select id="city-2"></select>
+          </div>
+        </div>
+ 
+        <div class="badge" id="badge-2">
+          <div class="badge-left">
+            <span class="badge-dot dot-2"></span>
+            <div class="badge-info">
+              <div class="badge-city" id="badge-city-2">—</div>
+              <div class="badge-meta" id="badge-meta-2">Select a city</div>
+            </div>
+          </div>
+          <div class="badge-right">
+            <div class="badge-score" id="badge-score-2">—</div>
+            <div class="badge-label">INDEX</div>
+            <div class="badge-bar"><div class="badge-bar-fill"></div></div>
+          </div>
+        </div>
+ 
+        <div class="chart-area" id="chart-2"></div>
+      </div>
+ 
+    </div>
+ 
+  </body>
+</html>

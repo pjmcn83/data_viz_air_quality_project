@@ -383,10 +383,22 @@
                 map.setFilter('country-hover', ['==', ['get', 'C_abb'], '']);
             });
 
+                // <-- We add extra features to the map-->
+            map.addControl(new mapboxgl.NavigationControl()); // Add navigation controls
+            map.addControl(new mapboxgl.ScaleControl(), 'bottom-right'); // Add a scale control
+    
+             // we disable map rotation
+            map.dragRotate.disable();// disable map rotation using right click + drag
+            map.touchZoomRotate.disableRotation(); // disable map rotation using touch rotation gesture
+
             // ── Click: fit to country extent + show outline ───────────────────
             map.on('click', 'country-hit', (e) => {
                 if (!e.features.length) return;
-                const abb = e.features[0].properties.C_abb || '';
+                const feature = e.features[0];
+                const abb = feature.properties.C_abb || '';
+                const countryName = feature.properties.COUNTRY || feature.properties.name || 'Unknown Country';
+                const coveragePct = (feature.properties.C_S_per || 0).toFixed(1);
+                
                 map.setFilter('country-selected-outline', ['==', ['get', 'C_abb'], abb]);
 
                 // Start with cached bounds (built at overview zoom), then expand

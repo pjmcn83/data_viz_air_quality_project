@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #060c16;
+  --surface: #0d1622;
+  --border:  #1a2d3f;
+  --text:    #c8dae8;
+  --muted:   #3d5a75;
+  --muted-2: #5a7a96;
+  --accent:  #38bdf8;
+  --danger:  #f87171;
+  --font-display: 'Syne', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+}
+
+body {
+  background:  var(--bg);
+  color:       var(--text);
+  font-family: var(--font-display);
+  font-size:   14px;
+  overflow-y:  auto;
+}
+
+/* Subtle grid background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(56,189,248,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(56,189,248,0.02) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#app {
+  max-width:  1000px;
+  margin:     0 auto;
+  padding:    2.5rem 2rem 5rem;
+  position:   relative;
+  z-index:    1;
+}
+
+/* ── HEADER ──────────────────────────────────── */
+#header {
+  margin-bottom:  2rem;
+  padding-bottom: 1.25rem;
+  border-bottom:  2px solid var(--border);
+}
+
+#header h1 {
+  font-family:    var(--font-display);
+  font-size:      1.5rem;
+  font-weight:    800;
+  letter-spacing: -.01em;
+  color:          var(--text);
+  margin-bottom:  .3rem;
+}
+
+#header p {
+  font-family: var(--font-mono);
+  font-size:   .72rem;
+  color:       var(--muted-2);
+  letter-spacing: .04em;
+}
+
+/* ── LEGEND ──────────────────────────────────── */
+#legend {
+  display:       flex;
+  gap:           2rem;
+  margin-bottom: 1.75rem;
+  font-family:   var(--font-mono);
+  font-size:     .68rem;
+  color:         var(--muted-2);
+  align-items:   center;
+  letter-spacing: .03em;
+}
+
+.legend-item {
+  display:     flex;
+  align-items: center;
+  gap:         .45rem;
+}
+
+.legend-dot {
+  width:         8px;
+  height:        8px;
+  border-radius: 50%;
+  background:    var(--accent);
+  opacity:       .4;
+  flex-shrink:   0;
+}
+
+.legend-dot.highlighted {
+  opacity:      1;
+  background:   #ffffff;
+  border:       1.5px solid var(--accent);
+  width:        10px;
+  height:       10px;
+  box-shadow:   0 0 6px rgba(56,189,248,0.4);
+}
+
+.legend-iqr {
+  width:         18px;
+  height:        10px;
+  background:    rgba(56,189,248,0.12);
+  border:        1px solid rgba(56,189,248,0.2);
+  border-radius: 2px;
+  flex-shrink:   0;
+}
+
+.legend-mean {
+  width:         2px;
+  height:        14px;
+  background:    var(--danger);
+  border-radius: 1px;
+  flex-shrink:   0;
+}
+
+/* ── REGION ROW ──────────────────────────────── */
+.region-row {
+  margin-bottom: .5rem;
+}
+
+.region-label {
+  font-family:    var(--font-display);
+  font-size:      .65rem;
+  font-weight:    800;
+  text-transform: uppercase;
+  letter-spacing: .14em;
+  color:          var(--accent);
+  margin-bottom:  .3rem;
+  padding-left:   4px;
+}
+
+.region-chart {
+  display:    block;
+  background: transparent;
+}
+
+/* ── AXIS ROW ────────────────────────────────── */
+.axis-row {
+  margin-bottom: .6rem;
+}
+
+.axis-row svg { display: block; }
+
+/* ── TOOLTIP ─────────────────────────────────── */
+#tooltip {
+  position:       fixed;
+  background:     var(--surface);
+  border:         1px solid var(--border);
+  border-left:    2px solid var(--accent);
+  border-radius:  5px;
+  padding:        .5rem .85rem;
+  font-size:      .76rem;
+  pointer-events: none;
+  opacity:        0;
+  transition:     opacity .1s;
+  z-index:        999;
+  min-width:      150px;
+  box-shadow:     0 4px 20px rgba(0,0,0,0.4);
+}
+
+#tooltip .tt-city    {
+  font-family:  var(--font-display);
+  font-weight:  700;
+  font-size:    .85rem;
+  color:        var(--text);
+  margin-bottom: 2px;
+}
+#tooltip .tt-country {
+  font-family: var(--font-mono);
+  color:       var(--muted-2);
+  font-size:   .65rem;
+}
+#tooltip .tt-score {
+  font-family:  var(--font-mono);
+  color:        var(--accent);
+  font-weight:  700;
+  margin-top:   .3rem;
+  font-size:    .8rem;
+}
