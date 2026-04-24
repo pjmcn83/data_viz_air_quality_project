@@ -3,78 +3,73 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/global.css">
     <style>
-        :root {
-            --bg:         #07090f;
-            --text:       #e2e8f0;
-            --text-muted: #94a3b8;
-            --accent:     #38bdf8;
-        }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             width: 100vw; height: 100vh;
             background: var(--bg);
-            font-family: 'Space Grotesk', sans-serif;
             color: var(--text);
             display: flex;
             align-items: center;
-            justify-content: center;
-            padding: 3rem;
             overflow: hidden;
         }
 
-        .intro-inner {
-            max-width: 720px;
-            text-align: center;
+        .intro-wrap {
+            position: absolute;
+            top: 18%;
+            left: 5%;
+            right: 5%;
+            text-align: right;
         }
 
-        .section-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
+        h2 {
+            font-size: clamp(1.6rem, 2.6vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
             color: var(--accent);
-            margin-bottom: 1.25rem;
+            margin-bottom: 0.5rem;
+            padding-right: 3%;
         }
 
-        p {
-            font-size: clamp(1.05rem, 1.8vw, 1.45rem);
+        h3 {
+            font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            color: #ffffff;
+            margin-bottom: 1.2rem;
+            padding-right: 3%;
+        }
+
+        .paragraph-main {
+            color: #ffffff;
+            text-align: justify;
+            padding: 3%;
             line-height: 1.75;
-            color: var(--text-muted);
+            font-size: clamp(1rem, 1.4vw, 1.2rem);
+            overflow-y: auto;
+            max-height: 58vh;
         }
 
-        strong { color: var(--text); }
-
-        .btn-outline {
-            display: inline-block;
-            margin-top: 2.5rem;
-            padding: 0.7rem 2.2rem;
-            border: 1px solid var(--accent);
-            color: var(--accent);
-            text-decoration: none;
-            font-family: 'Space Mono', monospace;
-            font-size: 0.75rem;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            transition: background 0.25s, color 0.25s;
-            cursor: pointer;
+        .paragraph-main p {
+            margin-bottom: 1.2em;
         }
 
-        .btn-outline:hover { background: var(--accent); color: var(--bg); }
+        .paragraph-main p:last-child {
+            margin-bottom: 0;
+        }
+
+        .hl { color: var(--accent); font-weight: 700; }
     </style>
 </head>
 <body>
-    <div class="intro-inner">
-        <div class="section-label">Introduction</div>
-        <p>
-            <strong>Air quality has a big influence on people's health.</strong>
-            Smart cities use data to drive global urban decision-making.
-            In reality, data collections are embedded with assumptions.
-        </p>
-        <a class="btn-outline" href="#">More info &nbsp;→</a>
+    <div class="intro-wrap">
+        <h2>Introduction</h2>
+        <h3>The global state of air quality monitoring</h3>
+        <div class="paragraph-main">
+            <p>Air pollution is the greatest <span class="hl">environmental threat</span> to human health, causing an estimated seven million premature deaths worldwide each year. The most dangerous of these pollutants is <span class="hl">PM2.5</span> (particulate matter smaller than 2.5 micrometers), which leads to and exacerbates numerous health conditions and impairs cognitive development in children.</p>
+            <p>In 2023, only 9% of globally reporting cities and 7% of countries achieved the WHO annual <span class="hl">PM2.5</span> guideline value of 5 µg/m³, highlighting the need for <span class="hl">action</span> across the globe to reduce air pollution. <span class="hl">Long-term monitoring</span> of air pollutants is a fundamental step in addressing air quality issues. It allows for more informed health interventions, the provision of economic incentives and the implementation of policies.</p>
+            <p>However, <span class="hl">inequalities</span> emerge in the way global air quality is measured. This site explores the spatial distribution of air quality sensors worldwide, and investigates the potential mechanisms driving gaps.</p>
+        </div>
     </div>
     <script>
         document.addEventListener('wheel', (e) => {

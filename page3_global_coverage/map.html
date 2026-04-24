@@ -4,10 +4,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/global.css">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { width: 100vw; height: 100vh; overflow: hidden; background: #07090f; }
+        body {
+            width: 100vw; height: 100vh;
+            overflow: hidden;
+            background: #07090f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #map-container {
+            width: calc(100vw - 6vw);
+            height: calc(100vh - 12vh);
+            margin-top: 4vh;
+            border: 4px solid #000000;
+            position: relative;
+            overflow: hidden;
+        }
+
         #map { width: 100%; height: 100%; }
         .mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib { display: none !important; }
 
@@ -21,12 +38,12 @@
             border: 1px solid rgba(255, 255, 255, 0.09);
             padding: 0.9rem 1.1rem;
             min-width: 200px;
-            font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+            font-family: 'Manrope', sans-serif;
             color: #e2e8f0;
         }
 
         .legend-title {
-            font-family: 'Space Mono', 'Courier New', monospace;
+            font-family: 'Manrope', sans-serif;
             font-size: 0.64rem;
             letter-spacing: 0.12em;
             text-transform: uppercase;
@@ -74,6 +91,7 @@
     </style>
 </head>
 <body>
+<div id="map-container">
     <div id="map"></div>
 
     <div id="legend">
@@ -90,6 +108,7 @@
             <span>No coverage</span>
         </div>
     </div>
+</div>
 
     <script>
         const TOKEN = 'pk.eyJ1IjoiZW1pbHlkdWdtb3JlIiwiYSI6ImNta285NjZiZzAzMzQza3M5ZmRodHp6ZDcifQ.geVyLy4fYjBWRAGJSbwN-g';
@@ -137,8 +156,8 @@
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/emilydugmore/cmneoxtrw003a01r11o2c6f7f',
-            center: [0, 20],
-            zoom: 1.8,
+            center: [10, 20],
+            zoom: 1.0,
             projection: 'mercator'
         });
 
@@ -236,20 +255,6 @@
                 }
             });
 
-            // Subtle country outline
-            map.addLayer({
-                id: 'country-outline',
-                type: 'line',
-                slot: 'middle',
-                source: 'countries',
-                'source-layer': 'country_data',
-                maxzoom: DETAIL_ZOOM,
-                paint: {
-                    'line-color': 'rgba(255,255,255,0.12)',
-                    'line-width': 0.5
-                }
-            });
-
             // Hover highlight
             map.addLayer({
                 id: 'country-hover',
@@ -274,11 +279,36 @@
                 paint: { 'fill-color': 'rgba(0,0,0,0)', 'fill-opacity': 0 }
             });
 
+            // Country outline — slot:'top' sits above fills/lines but below all basemap labels
+            map.addLayer({
+                id: 'country-outline',
+                type: 'line',
+                slot: 'top',
+                source: 'countries',
+                'source-layer': 'country_data',
+                filter: ['>=', ['coalesce', ['get', 'C_S_per'], 0], 0.5],
+                paint: {
+                    'line-color': '#ffffff',
+                    'line-emissive-strength': 1,
+                    'line-opacity': [
+                        'interpolate', ['linear'], ['zoom'],
+                        DETAIL_ZOOM - 0.5, 1,
+                        DETAIL_ZOOM,       0
+                    ],
+                    'line-width': [
+                        'interpolate', ['linear'], ['zoom'],
+                        1, 0.5,
+                        4, 1.2,
+                        8, 2.0,
+                        12, 3.5
+                    ]
+                }
+            });
+
             // Selected country outline — persists at all zoom levels after click
             map.addLayer({
                 id: 'country-selected-outline',
                 type: 'line',
-                slot: 'top',
                 source: 'countries',
                 'source-layer': 'country_data',
                 filter: ['==', ['get', 'C_abb'], ''],
@@ -307,7 +337,7 @@
                     'raster-opacity': [
                         'interpolate', ['linear'], ['zoom'],
                         DETAIL_ZOOM,       0,
-                        DETAIL_ZOOM + 0.2, 0.5
+                        DETAIL_ZOOM + 0.2, 0.7
                     ],
                     'raster-color': POP_COLOR
                 }
@@ -324,7 +354,7 @@
                 minzoom: DETAIL_ZOOM,
                 paint: {
                     'circle-emissive-strength': 1,
-                    'circle-radius': 5,
+                    'circle-radius': 3,
                     'circle-color': '#1d4ed8',
                     'circle-stroke-width': 1.5,
                     'circle-stroke-color': '#ffffff',
@@ -397,6 +427,7 @@
         });
 
         map.on('idle', buildCountryCache);
+
     </script>
 </body>
 </html>

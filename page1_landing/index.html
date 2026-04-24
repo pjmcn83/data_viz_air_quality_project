@@ -3,22 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/global.css">
     <style>
-        :root {
-            --bg:     #07090f;
-            --text:   #e2e8f0;
-            --accent: #38bdf8;
-        }
-
-        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             width: 100vw; height: 100vh;
             background:
-                radial-gradient(ellipse 80% 60% at 50% 50%, rgba(56,189,248,0.06) 0%, transparent 70%),
-                var(--bg);
-            font-family: 'Space Grotesk', sans-serif;
+                linear-gradient(rgba(7,9,15,0.45), rgba(7,9,15,0.45)),
+                url('../images/landing.webp') center/cover no-repeat;
             color: var(--text);
             display: flex;
             flex-direction: column;
@@ -30,34 +21,13 @@
             overflow: hidden;
         }
 
-        .section-label {
-            font-family: 'Space Mono', monospace;
-            font-size: 0.7rem;
-            letter-spacing: 0.22em;
-            text-transform: uppercase;
-            color: var(--accent);
-            margin-bottom: 1.25rem;
-        }
-
         h1 {
             font-size: clamp(1.9rem, 3.8vw, 4.2rem);
             font-weight: 700;
             line-height: 1.08;
             letter-spacing: -0.025em;
             max-width: 960px;
-            background: linear-gradient(150deg, #ffffff 0%, #cbd5e1 60%, #64748b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .landing-sub {
-            margin-top: 1.8rem;
-            color: var(--accent);
-            font-family: 'Space Mono', monospace;
-            font-size: 0.78rem;
-            letter-spacing: 0.2em;
-            text-transform: uppercase;
+            color: #ffffff;
         }
 
         .scroll-cue {
@@ -69,8 +39,7 @@
             flex-direction: column;
             align-items: center;
             gap: 0.4rem;
-            color: #94a3b8;
-            font-family: 'Space Mono', monospace;
+            color: #ffffff;
             font-size: 0.65rem;
             letter-spacing: 0.15em;
             text-transform: uppercase;
@@ -89,9 +58,7 @@
     </style>
 </head>
 <body>
-    <div class="section-label">Air Quality Research</div>
-    <h1>Investigating Global Disparities in Air Quality Analytics</h1>
-    <span class="landing-sub">A Data Visualisation</span>
+    <h1>Investigating Global Disparities in Air Quality Sensors</h1>
     <div class="scroll-cue">
         <span>Scroll to explore</span>
         <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
