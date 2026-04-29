@@ -185,31 +185,121 @@
         }
 
 
-        /* ── EXPLORE REASONS ──────────────────────────── */
-        .topic-buttons { display: flex; flex-direction: column; gap: 0.5rem; }
+        /* ── WHY THE GAPS ─────────────────────────────── */
+        .reasons-section {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem 3vw 1.5vh 3vw;
+            background: var(--bg);
+            overflow: hidden;
+        }
 
-        .topic-btn {
-            padding: 0.55rem 1.1rem;
-            background: transparent;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-
-            font-size: 0.85rem;
-            cursor: pointer;
+        .reasons-header {
+            flex-shrink: 0;
             text-align: left;
-            transition: border-color 0.2s, color 0.2s, background 0.2s;
+            margin-bottom: 1.5vh;
         }
 
-        .topic-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .reasons-header h2 {
+            font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
 
-        .topic-btn.active {
-            border-color: var(--accent);
-            background: rgba(235, 148, 41, 0.08);
+        .reasons-subtitle {
+            font-size: clamp(1rem, 1.4vw, 1.25rem);
+            font-weight: 400;
             color: #ffffff;
+            display: block;
+            margin-bottom: 0.75vh;
         }
 
-        .topic-content { display: none; flex-direction: column; gap: 1rem; }
-        .topic-content.visible { display: flex; }
+        .reasons-intro {
+            font-size: clamp(0.9rem, 1.15vw, 1.05rem);
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        .reasons-columns {
+            display: flex;
+            flex: 1;
+            gap: 2vw;
+            min-height: 0;
+        }
+
+        .reason-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            border-left: 1px solid rgba(255,255,255,0.12);
+            padding-left: 1.5vw;
+            min-height: 0;
+            overflow: hidden;
+        }
+
+        .reason-col .col-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.6rem;
+            flex-shrink: 0;
+            font-size: clamp(1rem, 1.4vw, 1.25rem);
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--accent);
+        }
+
+        .col-label-icon {
+            display: inline-block;
+            width: 1.2em;
+            height: 1.2em;
+            background-color: var(--accent);
+            mask-size: contain;
+            mask-repeat: no-repeat;
+            mask-position: center;
+            -webkit-mask-size: contain;
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            flex-shrink: 0;
+        }
+
+        .reason-text {
+            font-size: clamp(0.88rem, 1.1vw, 1rem);
+            color: rgba(255,255,255,0.65);
+            line-height: 1.55;
+            margin-bottom: 0.75vh;
+            flex-shrink: 0;
+        }
+
+        .case-study-name {
+            font-size: clamp(0.95rem, 1.2vw, 1.1rem);
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 0.4rem;
+            flex-shrink: 0;
+        }
+
+        .case-text {
+            font-size: clamp(0.82rem, 1vw, 0.95rem);
+            color: rgba(255,255,255,0.65);
+            line-height: 1.55;
+            margin-bottom: 0.75vh;
+            flex-shrink: 0;
+        }
+
+        .reason-map {
+            flex: 1;
+            min-height: 0;
+            border: none;
+            display: block;
+            width: 100%;
+        }
     </style>
 </head>
 <body>
@@ -298,29 +388,35 @@
         <iframe src="page6_boxplots/6_boxplots.html" style="width:100%;height:100vh;border:none;display:block;"></iframe>
     </div>
 
-    <!-- PAGE 5 — EXPLORE REASONS FOR GAPS -->
+    <!-- PAGE 7 — WHY THE GAPS -->
     <div class="section">
-        <div class="map-section">
-            <iframe id="reasons-frame" class="map-frame" src="page7_reasons/7_reasons.html"></iframe>
-            <div class="sidebar">
-                <div class="section-label">Why the gaps?</div>
-                <p>The disparities in air quality monitoring are driven by a combination of factors. Select a theme to explore:</p>
-                <div class="topic-buttons">
-                    <button class="topic-btn" data-topic="political">Political</button>
-                    <button class="topic-btn" data-topic="policy">Policy</button>
-                    <button class="topic-btn" data-topic="economic">Economic &amp; Infrastructure</button>
+        <div class="reasons-section">
+            <div class="reasons-header">
+                <h2>Why the gaps?</h2>
+                <span class="reasons-subtitle">Exploring the factors contributing to monitoring disparities</span>
+                <p class="reasons-intro">The disparities in air quality monitoring are driven by a combination of factors, many of which are embedded in historical inequalities. The following three factors are the main contributors to the divides we see.</p>
+            </div>
+            <div class="reasons-columns">
+                <div class="reason-col">
+                    <div class="col-label"><span class="col-label-icon" style="mask-image:url(images/political.svg);-webkit-mask-image:url(images/political.svg)"></span>Political</div>
+                    <p class="reason-text">South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance...</p>
+                    <div class="case-study-name">Political tensions between North and South Korea</div>
+                    <p class="case-text">South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance.</p>
+                    <iframe class="reason-map" src="page7_reasons/political.html"></iframe>
                 </div>
-                <div id="topic-political" class="topic-content">
-                    <p>South Korea has the <strong>best sensor coverage</strong> in the world, with 88% of the population living within 5 km of an air quality sensor.</p>
-                    <p>Just next door, <strong>North Korea has none</strong>. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance.</p>
+                <div class="reason-col">
+                    <div class="col-label"><span class="col-label-icon" style="mask-image:url(images/policy.svg);-webkit-mask-image:url(images/policy.svg)"></span>Policy</div>
+                    <p class="reason-text">South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance...</p>
+                    <div class="case-study-name">Policy-driven monitoring in Chicago</div>
+                    <p class="case-text">Chicago benefits from a dense, well-funded sensor network embedded across its neighbourhoods. Cairo, one of the world's most air-polluted cities, has comparatively sparse monitoring infrastructure. What we can't see, we can't act on.</p>
+                    <iframe class="reason-map" src="page7_reasons/policy.html"></iframe>
                 </div>
-                <div id="topic-policy" class="topic-content">
-                    <p>Chicago benefits from a dense, well-funded sensor network embedded across its neighbourhoods.</p>
-                    <p>Cairo, one of the world's most air-polluted cities, has comparatively sparse monitoring infrastructure. <strong>What we can't see, we can't act on.</strong></p>
-                </div>
-                <div id="topic-economic" class="topic-content">
-                    <p>Regions in Africa are among the <strong>most populated in the world</strong>, but little air measurement data is available.</p>
-                    <p>This is largely due to <strong>economic and infrastructure constraints</strong> — sensors are expensive to procure, maintain and calibrate.</p>
+                <div class="reason-col">
+                    <div class="col-label"><span class="col-label-icon" style="mask-image:url(images/wifi.svg);-webkit-mask-image:url(images/wifi.svg)"></span>Infrastructure</div>
+                    <p class="reason-text">South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance...</p>
+                    <div class="case-study-name">Limited capacity in Africa</div>
+                    <p class="case-text">Regions in Africa are among the most populated in the world, but little air measurement data is available. This is largely due to economic and infrastructure constraints — sensors are expensive to procure, maintain and calibrate.</p>
+                    <iframe class="reason-map" src="page7_reasons/economic.html"></iframe>
                 </div>
             </div>
         </div>
@@ -346,18 +442,15 @@ new fullpage('#fullpage', {
     }
 });
 
-/* ── Explore reasons topic buttons ───────────────────────────────── */
-document.querySelectorAll('.topic-btn').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const topic = this.dataset.topic;
-        document.querySelectorAll('.topic-btn').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        document.querySelectorAll('.topic-content').forEach(c => c.classList.remove('visible'));
-        document.getElementById('topic-' + topic).classList.add('visible');
-        document.getElementById('reasons-frame').contentWindow.postMessage({ action: 'flyTo', topic }, '*');
-    });
+window.addEventListener('message', function (e) {
+    if (e.data.action !== 'wheel') return;
+    if (fullpage_api.getActiveSection().index() !== 5) return;
+    if (e.data.deltaY > 0) {
+        fullpage_api.moveSectionDown();
+    } else {
+        fullpage_api.moveSectionUp();
+    }
 });
-
 
 </script>
 </body>

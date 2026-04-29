@@ -34,10 +34,11 @@
             bottom: 1.8rem;
             left: 1.4rem;
             z-index: 10;
-            background: rgba(7, 9, 15, 0.88);
+            background: #000000;
             border: 1px solid rgba(255, 255, 255, 0.09);
             padding: 0.9rem 1.1rem;
-            min-width: 200px;
+            width: 230px;
+            box-sizing: border-box;
             font-family: 'Manrope', sans-serif;
             color: #e2e8f0;
         }
@@ -46,7 +47,6 @@
             font-family: 'Manrope', sans-serif;
             font-size: 0.64rem;
             letter-spacing: 0.12em;
-            text-transform: uppercase;
             color: #94a3b8;
             margin-bottom: 0.65rem;
             line-height: 1.5;
@@ -88,6 +88,92 @@
             );
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
+
+        .legend-divider {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            margin: 0.7rem 0;
+        }
+
+        .legend-hint {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.63rem;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .legend-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            color: #cbd5e1;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.65rem;
+            padding: 0.4rem 0.6rem;
+            cursor: pointer;
+            text-align: left;
+            margin-bottom: 0.55rem;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .legend-toggle:hover {
+            background: rgba(255, 255, 255, 0.11);
+        }
+
+        .legend-toggle.active {
+            background: rgba(59, 130, 246, 0.15);
+            border-color: rgba(59, 130, 246, 0.4);
+            color: #93c5fd;
+        }
+
+        .toggle-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.25);
+            flex-shrink: 0;
+            transition: background 0.2s;
+        }
+
+        .legend-toggle.active .toggle-dot {
+            background: #3b82f6;
+        }
+
+        /* ── Country stats panel ─────────────────────────────────────────── */
+        #country-stats {
+            display: none;
+        }
+
+        .cs-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            letter-spacing: 0.04em;
+            margin-bottom: 0.45rem;
+        }
+
+        .cs-coverage {
+            font-size: 0.63rem;
+            color: #94a3b8;
+            line-height: 1.65;
+            margin-bottom: 0.4rem;
+        }
+
+        .cs-coverage strong {
+            color: #cbd5e1;
+            font-weight: 600;
+        }
+
+        .cs-rank {
+            font-size: 0.62rem;
+            color: #64748b;
+            line-height: 1.55;
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
@@ -95,7 +181,7 @@
     <div id="map"></div>
 
     <div id="legend">
-        <div class="legend-title">% of population within<br>5 km of a sensor</div>
+        <div class="legend-title">This map shows the % of the population located within 5km of an air sensor at the country level.</div>
         <div class="legend-bar"></div>
         <div class="legend-scale-labels">
             <span>0%</span>
@@ -107,6 +193,20 @@
             <div class="legend-stripe"></div>
             <span>No coverage</span>
         </div>
+        <hr class="legend-divider">
+        <div class="legend-hint">Zoom in to see the exact locations of air sensors</div>
+        <button id="pop-toggle" class="legend-toggle">
+            <span class="toggle-dot"></span>
+            Add a population distribution layer
+        </button>
+        <div class="legend-hint">Click on a country to learn more</div>
+
+        <div id="country-stats">
+            <hr class="legend-divider">
+            <div id="cs-name" class="cs-name"></div>
+            <div id="cs-coverage" class="cs-coverage"></div>
+            <div id="cs-rank" class="cs-rank"></div>
+        </div>
     </div>
 </div>
 
@@ -117,22 +217,38 @@
         const POP_COLOR = [
             'interpolate', ['linear'], ['raster-value'],
             0,      'rgba(0,0,0,0)',
-            0.2667, '#f4fbf3', 0.3961, '#f4fbf3',
-            0.4,    '#d9f2e5', 0.5137, '#d9f2e5',
-            0.5176, '#a8e3e6', 0.5961, '#a8e3e6',
-            0.6,    '#71c7d8', 0.6549, '#71c7d8',
-            0.6588, '#428bcc', 0.7059, '#428bcc',
-            0.7098, '#356bb4', 0.7451, '#356bb4',
-            0.7490, '#2b4da0', 0.7686, '#2b4da0',
-            0.7725, '#28309f', 0.7961, '#28309f',
-            0.8,    '#521f8b', 0.8118, '#521f8b',
-            0.8157, '#700180', 0.8353, '#700180',
-            0.8392, '#9a0049', 0.8627, '#9a0049',
-            0.8667, '#cc003d', 0.8902, '#cc003d',
-            0.8941, '#ef0405', 0.9333, '#ef0405',
-            0.9373, '#f16206', 0.9686, '#f16206',
-            0.9725, '#f39e03', 0.9922, '#f39e03',
-            0.9961, '#f5c402', 1.0,   '#f5c402'
+            0.2667, 'rgba(244, 251, 243, 0.35)', 
+            0.3961, 'rgba(244, 251, 243, 0.35)',
+            0.4,    'rgba(217, 242, 229, 0.35)', 
+            0.5137, 'rgba(217, 242, 229, 0.35)',
+            0.5176, '#a8e3e6', 
+            0.5961, '#a8e3e6',
+            0.6,    '#71c7d8', 
+            0.6549, '#71c7d8',
+            0.6588, '#428bcc', 
+            0.7059, '#428bcc',
+            0.7098, '#356bb4', 
+            0.7451, '#356bb4',
+            0.7490, '#2b4da0', 
+            0.7686, '#2b4da0',
+            0.7725, '#28309f', 
+            0.7961, '#28309f',
+            0.8,    '#521f8b', 
+            0.8118, '#521f8b',
+            0.8157, '#700180', 
+            0.8353, '#700180',
+            0.8392, '#9a0049', 
+            0.8627, '#9a0049',
+            0.8667, '#cc003d', 
+            0.8902, '#cc003d',
+            0.8941, '#ef0405', 
+            0.9333, '#ef0405',
+            0.9373, '#f16206', 
+            0.9686, '#f16206',
+            0.9725, '#f39e03', 
+            0.9922, '#f39e03',
+            0.9961, '#f5c402', 
+            1.0,   '#f5c402'
         ];
 
         // Diagonal stripe tile used for 0% countries
@@ -161,6 +277,61 @@
             projection: 'mercator'
         });
 
+        // ── Stats helpers ─────────────────────────────────────────────────────
+        let maxRank = 0;
+
+        function ordinal(n) {
+            const s = ['th', 'st', 'nd', 'rd'];
+            const v = n % 100;
+            return n + (s[(v - 20) % 10] || s[v] || s[0]);
+        }
+
+        function formatPop(n) {
+            if (!n || isNaN(n)) return 'unknown';
+            n = Math.round(n);
+            if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + ' billion';
+            if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + ' million';
+            if (n >= 1e3) return Math.round(n / 1e3) + ' thousand';
+            return n.toLocaleString();
+        }
+
+        function getRankSentence(name, rank, total) {
+            if (!rank) return '';
+            const t = total || 180;
+            if (rank === 1) {
+                return `${name} has the highest air sensor coverage in the world.`;
+            }
+            if (rank <= 10) {
+                return `${name} has the ${ordinal(rank)} highest sensor coverage.`;
+            }
+            const pctFromTop = Math.round((rank / t) * 100);
+            if (pctFromTop <= 50) {
+                return `${name} is in the top ${pctFromTop}% of sensor coverage in the world.`;
+            }
+            return `${name} is in the bottom ${100 - pctFromTop}% of sensor coverage in the world.`;
+        }
+
+        function showCountryStats(props) {
+            const name       = props.C_name || 'Unknown';
+            const sensors    = props.no_sensors   != null ? Math.round(props.no_sensors)   : null;
+            const pct        = props.C_S_per      != null ? +props.C_S_per                 : null;
+            const pop        = props.C_pop        != null ? +props.C_pop                   : null;
+            const rank       = props.cover_rank   != null ? Math.round(props.cover_rank)   : null;
+
+            const sensorStr  = sensors != null ? sensors : '?';
+            const pctStr     = pct     != null ? pct.toFixed(1) + '%' : '?%';
+            const popStr     = pop     != null ? formatPop(pop) : 'unknown';
+
+            document.getElementById('cs-name').textContent = name;
+            document.getElementById('cs-coverage').innerHTML =
+                `<strong>${name}</strong>'s <strong>${sensorStr}</strong> sensor${sensors !== 1 ? 's' : ''} ` +
+                `cover approximately <strong>${pctStr}</strong> of the country's ` +
+                `<strong>${popStr}</strong> inhabitants.`;
+            document.getElementById('cs-rank').textContent =
+                rank ? getRankSentence(name, rank, maxRank) : '';
+            document.getElementById('country-stats').style.display = 'block';
+        }
+
         // Cache country bounds at overview zoom so fitBounds works at any zoom level
         const countryCache = {};
 
@@ -169,6 +340,8 @@
             for (const feat of features) {
                 const abb = feat.properties.C_abb;
                 if (!abb || !feat.geometry) continue;
+                const r = feat.properties.cover_rank;
+                if (r && r > maxRank) maxRank = r;
                 try {
                     const b = geoBounds(feat.geometry);
                     if (!countryCache[abb]) {
@@ -200,6 +373,7 @@
             return [[minLng, minLat], [maxLng, maxLat]];
         }
 
+
         map.on('load', () => {
             map.setFog(null);
             map.addImage('stripes', makeStripePattern());
@@ -207,7 +381,7 @@
             // ── Country boundaries (vector) ──────────────────────────────────
             map.addSource('countries', {
                 type: 'vector',
-                url: 'mapbox://emilydugmore.48mjdbxk'
+                url: 'mapbox://emilydugmore.05r13vv6'
             });
 
             // Choropleth fill — countries with C_S_per >= 0.5%
@@ -269,6 +443,7 @@
                 }
             });
 
+            // Hover border — orange outline on hovered country
             // Invisible hit area
             map.addLayer({
                 id: 'country-hit',
@@ -279,29 +454,42 @@
                 paint: { 'fill-color': 'rgba(0,0,0,0)', 'fill-opacity': 0 }
             });
 
-            // Country outline — slot:'top' sits above fills/lines but below all basemap labels
+            // Country outline — choropleth zoom only; basemap borders take over beyond that
             map.addLayer({
                 id: 'country-outline',
                 type: 'line',
                 slot: 'top',
                 source: 'countries',
                 'source-layer': 'country_data',
+                maxzoom: DETAIL_ZOOM,
                 filter: ['>=', ['coalesce', ['get', 'C_S_per'], 0], 0.5],
                 paint: {
                     'line-color': '#ffffff',
                     'line-emissive-strength': 1,
-                    'line-opacity': [
-                        'interpolate', ['linear'], ['zoom'],
-                        DETAIL_ZOOM - 0.5, 1,
-                        DETAIL_ZOOM,       0
-                    ],
+                    'line-opacity': 1,
                     'line-width': [
                         'interpolate', ['linear'], ['zoom'],
-                        1, 0.5,
-                        4, 1.2,
-                        8, 2.0,
-                        12, 3.5
+                        1,  0.5,
+                        4,  1.2,
+                        8,  3.0,
+                        12, 5.0,
+                        15, 7.0
                     ]
+                }
+            });
+
+            // Hover border — orange outline, always on top of country-outline
+            map.addLayer({
+                id: 'country-hover-outline',
+                type: 'line',
+                slot: 'top',
+                source: 'countries',
+                'source-layer': 'country_data',
+                filter: ['==', ['get', 'C_abb'], ''],
+                paint: {
+                    'line-color': '#ffffff',
+                    'line-width': 2,
+                    'line-emissive-strength': 1
                 }
             });
 
@@ -315,7 +503,7 @@
                 paint: {
                     'line-color': '#ffffff',
                     'line-emissive-strength': 1,
-                    'line-width': 3,
+                    'line-width': 1.5,
                     'line-opacity': 1
                 }
             });
@@ -345,42 +533,94 @@
 
             // ── Sensor dots — only appear when zoomed in ──────────────────────
             map.addSource('sensors', { type: 'vector', url: 'mapbox://emilydugmore.96ka7gjb' });
+
+            const sensorPaint = {
+                'circle-emissive-strength': 1,
+                'circle-radius': [
+                    'interpolate', ['linear'], ['zoom'],
+                    3,  3,
+                    6,  4,
+                    9,  6,
+                    12, 8,
+                    15, 11
+                ],
+                'circle-stroke-width': 1.5,
+                'circle-stroke-color': '#000000',
+                'circle-opacity': [
+                    'interpolate', ['linear'], ['zoom'],
+                    DETAIL_ZOOM,       0,
+                    DETAIL_ZOOM + 0.2, 1
+                ],
+                'circle-stroke-opacity': [
+                    'interpolate', ['linear'], ['zoom'],
+                    DETAIL_ZOOM,       0,
+                    DETAIL_ZOOM + 0.2, 1
+                ]
+            };
+
+            // Base layer — always orange
             map.addLayer({
                 id: 'sensor-dots',
                 type: 'circle',
-                slot: 'middle',
+                slot: 'top',
                 source: 'sensors',
                 'source-layer': 'AQICN_sensors-5r58jr',
                 minzoom: DETAIL_ZOOM,
-                paint: {
-                    'circle-emissive-strength': 1,
-                    'circle-radius': 3,
-                    'circle-color': '#1d4ed8',
-                    'circle-stroke-width': 1.5,
-                    'circle-stroke-color': '#ffffff',
-                    'circle-opacity': [
-                        'interpolate', ['linear'], ['zoom'],
-                        DETAIL_ZOOM,       0,
-                        DETAIL_ZOOM + 0.2, 1
-                    ],
-                    'circle-stroke-opacity': [
-                        'interpolate', ['linear'], ['zoom'],
-                        DETAIL_ZOOM,       0,
-                        DETAIL_ZOOM + 0.2, 1
-                    ]
-                }
+                paint: { ...sensorPaint, 'circle-color': '#eb9429' }
+            });
+
+            // Highlight layer — white, filtered to hovered country (empty filter = hidden)
+            map.addLayer({
+                id: 'sensor-dots-highlight',
+                type: 'circle',
+                slot: 'top',
+                source: 'sensors',
+                'source-layer': 'AQICN_sensors-5r58jr',
+                minzoom: DETAIL_ZOOM,
+                filter: ['==', ['get', 'C_abb'], ''],
+                paint: { ...sensorPaint, 'circle-color': '#ffffff' }
             });
 
             // ── Hover highlight ───────────────────────────────────────────────
-            map.on('mousemove', 'country-hit', (e) => {
-                if (!e.features.length) return;
-                map.getCanvas().style.cursor = 'pointer';
-                map.setFilter('country-hover', ['==', ['get', 'C_abb'], e.features[0].properties.C_abb || '']);
+            let hoveredAbb = '';
+
+            function clearHover() {
+                hoveredAbb = '';
+                map.setFilter('country-hover',           ['==', ['get', 'C_abb'], '']);
+                map.setFilter('country-hover-outline',   ['==', ['get', 'C_abb'], '']);
+                map.setFilter('sensor-dots-highlight',   ['==', ['get', 'C_abb'], '']);
+                document.getElementById('country-stats').style.display = 'none';
+            }
+
+            // Single mousemove on the whole map — only reacts when cursor actually moves
+            map.on('mousemove', (e) => {
+                const features = map.queryRenderedFeatures(e.point, { layers: ['country-hit'] });
+                if (features.length) {
+                    map.getCanvas().style.cursor = 'pointer';
+                    const abb = features[0].properties.C_abb || '';
+                    if (abb === hoveredAbb) return;
+                    hoveredAbb = abb;
+                    map.setFilter('country-hover',         ['==', ['get', 'C_abb'], abb]);
+                    map.setFilter('country-hover-outline', ['==', ['get', 'C_abb'], abb]);
+                    map.setFilter('sensor-dots-highlight', ['==', ['get', 'C_abb'], abb]);
+                    showCountryStats(features[0].properties);
+                } else {
+                    map.getCanvas().style.cursor = '';
+                    if (!hoveredAbb) return;
+                    clearHover();
+                }
             });
 
-            map.on('mouseleave', 'country-hit', () => {
+            // Clear when mouse leaves the canvas entirely
+            map.on('mouseout', () => {
                 map.getCanvas().style.cursor = '';
-                map.setFilter('country-hover', ['==', ['get', 'C_abb'], '']);
+                if (hoveredAbb) clearHover();
+            });
+
+            // Re-apply highlight filter whenever sensor tiles finish loading
+            map.on('sourcedata', (e) => {
+                if (e.sourceId !== 'sensors' || !hoveredAbb) return;
+                map.setFilter('sensor-dots-highlight', ['==', ['get', 'C_abb'], hoveredAbb]);
             });
 
                 // <-- We add extra features to the map-->
@@ -391,14 +631,21 @@
             map.dragRotate.disable();// disable map rotation using right click + drag
             map.touchZoomRotate.disableRotation(); // disable map rotation using touch rotation gesture
 
+            // ── Population layer toggle ───────────────────────────────────────
+            let popLayerOn = false;
+            map.setLayoutProperty('pop-layer', 'visibility', 'none');
+            document.getElementById('pop-toggle').addEventListener('click', () => {
+                popLayerOn = !popLayerOn;
+                map.setLayoutProperty('pop-layer', 'visibility', popLayerOn ? 'visible' : 'none');
+                document.getElementById('pop-toggle').classList.toggle('active', popLayerOn);
+            });
+
             // ── Click: fit to country extent + show outline ───────────────────
             map.on('click', 'country-hit', (e) => {
                 if (!e.features.length) return;
                 const feature = e.features[0];
                 const abb = feature.properties.C_abb || '';
-                const countryName = feature.properties.COUNTRY || feature.properties.name || 'Unknown Country';
-                const coveragePct = (feature.properties.C_S_per || 0).toFixed(1);
-                
+
                 map.setFilter('country-selected-outline', ['==', ['get', 'C_abb'], abb]);
 
                 // Start with cached bounds (built at overview zoom), then expand
