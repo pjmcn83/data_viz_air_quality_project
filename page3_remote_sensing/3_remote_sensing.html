@@ -24,125 +24,174 @@
         #map-container {
             width: calc(100vw - 6vw);
             height: calc(100vh - 12vh);
-            margin-top: 4vh;
-            border: 4px solid #000000;
+            margin-top: 1vh;
+            border: 1px solid #000000;
             position: relative;
             overflow: hidden;
         }
 
         #map { width: 100%; height: 100%; position: relative; }
+        .mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib { display: none !important; }
 
         #console {
-            position: absolute; top: 1.2rem; left: 1.2rem; 
-            width: 270px; /* Narrowed */
+            position: absolute; bottom: 1.2rem; left: 1.2rem;
+            width: fit-content;
             background: rgba(7, 9, 15, 0.92); backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            padding: 1rem;
-            z-index: 10; display: flex; flex-direction: column; 
-            gap: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            z-index: 10;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            transition: bottom 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        .label-tiny { font-size: 0.6rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.1rem; }
-        #active-year { font-size: 1.2rem; font-weight: 700; color: #ffffff; }
-        .country-name { font-size: 0.95rem; font-weight: 600; color: #fff; display: block; line-height: 1.2; }
-        .h3-index { font-size: 0.6rem; color: #475569; }
-        .pm-val { font-size: 1.1rem; font-weight: 700; color: #fff; }
-        .cta-text { font-size: 0.85rem; color: #94a3b8; line-height: 1.5; margin-top: 0.2rem; }
+        body.chart-visible #console {
+            bottom: calc(220px + 1.2rem + 0.8rem);
+        }
 
-        /* ── Bottom Panel — absolutely positioned drawer over the map ── */
+        #controls-column {
+            display: flex; flex-direction: column; gap: 0.5rem;
+            padding: 0.7rem; width: 270px; flex-shrink: 0;
+        }
+
+        .label-tiny { font-size: 0.7rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.1rem; }
+        #active-year { font-size: 1.2rem; font-weight: 700; font-family: 'Manrope', sans-serif; color: #3b82f6; }
+        .country-name { font-size: 0.95rem; font-weight: 600; font-family: 'Manrope', sans-serif; color: #fff; display: block; line-height: 1.2; }
+        .pm-val { font-size: 1.1rem; font-weight: 700; font-family: 'Manrope', sans-serif; color: #fff; }
+        .cta-text { font-size: 0.8rem; font-family: 'Manrope', sans-serif; color: #94a3b8; line-height: 1.3; margin-top: 0.2rem; }
+
+        /* ── Info button + tooltip ── */
+        #info-wrap {
+            position: relative; display: flex; justify-content: flex-end;
+        }
+
+        #info-btn {
+            background: none; border: 1px solid rgba(255,255,255,0.12);
+            color: #64748b; font-size: 0.65rem; font-family: 'Manrope', sans-serif;
+            padding: 0.25rem 0.5rem; cursor: default;
+            letter-spacing: 0.05em; transition: color 0.2s, border-color 0.2s;
+        }
+
+        #info-btn:hover { color: #e2e8f0; border-color: rgba(255,255,255,0.3); }
+
+        #info-tooltip {
+            position: absolute; bottom: calc(100% + 0.5rem); left: 0;
+            width: 256px;
+            background: rgba(7, 9, 15, 0.97); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 0.8rem 1rem;
+            font-size: 0.75rem; color: #94a3b8; line-height: 1.6;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        #info-tooltip strong { color: #e2e8f0; display: block; margin-bottom: 0.4rem; font-size: 0.78rem; }
+
+        #info-wrap:hover #info-tooltip { opacity: 1; }
+
+        /* ── Chart panel ── */
         #bottom-panel {
-            position: absolute; bottom: 0; left: 0; right: 0;
-            height: 0; background: rgba(7, 9, 15, 0.98);
-            border-top: 0px solid rgba(255, 255, 255, 0.1);
-            padding: 0 2.5rem; overflow: hidden;
-            display: flex; gap: 2.5rem;
-            transition: height 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), padding 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 5;
+            position: absolute; left: 1.2rem; bottom: 1.2rem;
+            width: 600px; height: 0; overflow: hidden;
+            display: flex; flex-direction: row;
+            background: rgba(7, 9, 15, 0.92); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            z-index: 9;
+            transition: height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
-        #bottom-panel.visible {
-            height: 26vh; padding: 1.2rem 2.5rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
+        #bottom-panel.visible { height: 220px; }
 
         #chart-info-sidebar {
-            flex: 0 0 160px; display: flex; flex-direction: column;
-            justify-content: center; border-right: 1px solid rgba(255,255,255,0.05);
+            flex: 0 0 130px; display: flex; flex-direction: column;
+            justify-content: center; padding: 1rem;
+            border-right: 1px solid rgba(255,255,255,0.05);
         }
 
-        #chart-container { flex: 1; height: 100%; min-width: 0; }
+        #chart-container { flex: 1; min-width: 0; padding: 0.6rem 1rem; height: 100% }
 
         .stat-huge { font-size: 2rem; font-weight: 700; line-height: 1; }
-        .stat-label { font-size: 0.55rem; color: #64748b; text-transform: uppercase; margin-top: 0.3rem; letter-spacing: 0.08em; }
+        .stat-label { font-size: 0.75rem; color: #64748b; text-transform: uppercase; margin-top: 0.3rem; letter-spacing: 0.08em; }
 
-        .slider { width: 100%; accent-color: #ffffff; cursor: pointer; margin: 0.4rem 0; height: 4px; border-radius: 2px; }
-
+        .slider { width: 100%; accent-color: #3b82f6; cursor: pointer; margin: 0.2rem 0; height: 4px; border-radius: 2px; }
+        
         .button {
             background: #1e293b; color: #94a3b8; border: 1px solid rgba(255,255,255,0.1);
-            padding: 0.5rem; cursor: pointer; font-family: 'Manrope', sans-serif; font-size: 0.65rem;
+            padding: 0.5rem; cursor: pointer; font-family: 'Manrope'; font-size: 0.65rem;
             transition: 0.2s;
         }
         .button:hover { background: #334155; color: #fff; }
         .button.playing { border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.05); }
 
         .legend-bar { width: 100%; height: 6px; background: linear-gradient(to right, #009966, #f1d300, #f18b00, #ff0000, #7e0023); border-radius: 1px; margin: 0.3rem 0; }
-        .scale-labels { display: flex; justify-content: space-between; font-size: 0.55rem; color: #64748b; }
+        .scale-labels { display: flex; justify-content: space-between; font-size: 0.55rem; color: #64748b; font-family: 'Manrope'; }
         .flex-row { display: flex; align-items: center; justify-content: space-between; }
     </style>
 </head>
 
 <body>
-<div id="map-container">
 <div id="map">
     <div id="console">
-        <div id="geo-info">
-            <div class="label-tiny">Focus Area</div>
-            <span class="country-name" id="display-country">Global View</span>
-        </div>
-
-        <div id="timeline-group">
-            <div class="flex-row">
-                <span id="active-year">1998</span>
-                <span class="pm-val" id="display-pm">—</span>
+        <div id="controls-column">
+            <div id="geo-info">
+                <div class="label-tiny">Focus Area</div>
+                <span class="country-name" id="display-country">Global View</span>
+                <span class="cta-text" id="display-h3">Click on a cell to see how local PM2.5 concentrations have changed over time.</span>
             </div>
-            <input id="slider" class="slider" type="range" min="1998" max="2022" step="1" value="1998" />
-            <div style="display: flex; gap: 0.4rem; margin-top: 0.2rem;">
-                <button id="play-button" class="button" style="flex: 2;">▶ Play</button>
-                <button id="refresh-button" class="button" style="flex: 1;">↺ Reset</button>
+
+            <div id="timeline-group">
+                <div class="flex-row">
+                    <span id="active-year">2022</span>
+                    <span class="pm-val" id="display-pm">—</span>
+                </div>
+                <input id="slider" class="slider" type="range" min="1998" max="2022" step="1" value="2022" />
+                <div style="display: flex; gap: 0.4rem; margin-top: 0.2rem;">
+                    <button id="play-button" class="button" style="flex: 2;">▶ Play</button>
+                    <button id="refresh-button" class="button" style="flex: 1;">↺ Reset</button>
+                </div>
+            </div>
+
+            <div id="scale">
+                <div class="label-tiny" style="text-transform: none; letter-spacing: 0;">PM2.5 concentration (µg/m³)</div>
+                <div class="legend-bar"></div>
+                <div class="scale-labels"><span>0</span><span>12</span><span>35</span><span>55</span><span>100+</span></div>
+            </div>
+
+            <!-- Info button -->
+            <div id="info-wrap">
+                <button id="info-btn">ⓘ How to use</button>
+                <div id="info-tooltip">
+                    <strong>How to use this map</strong>
+                    This map shows annual mean PM2.5 concentrations across the globe from 1998 to 2022, aggregated into hexagonal grid cells.<br><br>
+                    Use the year slider or press Play to animate changes over time. Click any cell to see a full time-series chart for that location alongside country and continent averages.<br><br>
+                    Hover over the chart to see exact values. Click Reset to return to the global view.
+                </div>
             </div>
         </div>
-
-        <div id="scale">
-            <div class="label-tiny" style="text-transform: none; letter-spacing: 0;">PM2.5 concentration (µg/m³)</div>
-            <div class="legend-bar"></div>
-            <div class="scale-labels"><span>0</span><span>12</span><span>35</span><span>55</span><span>100+</span></div>
-        </div>
-
-        <div class="cta-text">Click on a cell to see how local PM2.5 concentrations have changed over time.</div>
     </div>
 </div>
 
+<!-- Chart panel — independently positioned -->
 <div id="bottom-panel">
     <div id="chart-info-sidebar">
         <div id="summary-stat" class="stat-huge">—</div>
-        <div class="stat-label">Total change since '98</div>
+        <div class="stat-label">Total change since 1998</div>
         <div id="trend-summary-label" class="label-tiny" style="margin-top: 1rem; color: #475569;">Analysis pending...</div>
     </div>
     <div id="chart-container">
         <canvas id="trendChart"></canvas>
     </div>
 </div>
-</div><!-- /#map-container -->
+</div>
 
 <script>
-    // ── Configuration ──
-    const MAP_DEFAULTS = { center: [-30, -10], zoom: 1.5 };
+    const MAP_DEFAULTS = { center: [0, 10], zoom: 2 };
     const YEARS = Array.from({ length: 25 }, (_, i) => 1998 + i);
     const countryCache = {}; 
 
     const ui = {
         country: document.getElementById('display-country'),
+        h3: document.getElementById('display-h3'),
         pm: document.getElementById('display-pm'),
         yearLabel: document.getElementById('active-year'),
         slider: document.getElementById('slider'),
@@ -152,9 +201,9 @@
         trendLabel: document.getElementById('trend-summary-label')
     };
 
-    let averagesData = null, currentYear = 1998, isPlaying = false, timer = null, trendChart = null, activeProperties = null;
+    let averagesData = null, currentYear = 2022, isPlaying = false, timer = null, trendChart = null, activeProperties = null;
 
-    fetch('./data/pm25_averages.json').then(res => res.json()).then(data => { averagesData = data; });
+    fetch('https://raw.githubusercontent.com/SSoubie/data_viz_air_quality_project/main/page3_remote_sensing/data/pm25_averages.json').then(res => res.json()).then(data => { averagesData = data; });
 
     mapboxgl.accessToken = 'pk.eyJ1IjoiZW1pbHlkdWdtb3JlIiwiYSI6ImNta285NjZiZzAzMzQza3M5ZmRodHp6ZDcifQ.geVyLy4fYjBWRAGJSbwN-g';
     
@@ -164,11 +213,15 @@
     ];
 
     const map = new mapboxgl.Map({
-        container: 'map', style: 'mapbox://styles/mapbox/dark-v11',
-        center: MAP_DEFAULTS.center, zoom: MAP_DEFAULTS.zoom, projection: 'mercator'
+        container: 'map',
+        style: 'mapbox://styles/emilydugmore/cmneoxtrw003a01r11o2c6f7f',
+        center: MAP_DEFAULTS.center,
+        zoom: MAP_DEFAULTS.zoom,
+        projection: 'mercator',
+        maxZoom: 8,
+        minZoom: 2
     });
 
-    // ── Helpers ──
     function geoBounds(geometry) {
         let minLng = Infinity, minLat = Infinity, maxLng = -Infinity, maxLat = -Infinity;
         const rings = geometry.type === 'Polygon' ? geometry.coordinates : geometry.coordinates.flat();
@@ -184,10 +237,7 @@
     function calculateTrendline(data) {
         const n = data.length;
         let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
-        data.forEach((y, x) => {
-            sumX += x; sumY += y;
-            sumXY += x * y; sumXX += x * x;
-        });
+        data.forEach((y, x) => { sumX += x; sumY += y; sumXY += x * y; sumXX += x * x; });
         const slope = (n * sumXY - sumX * sumY) / (n * sumXX - sumX * sumX);
         const intercept = (sumY - slope * sumX) / n;
         return { values: data.map((_, x) => slope * x + intercept), slope };
@@ -196,13 +246,11 @@
     function updateUI() {
         if (!activeProperties) return;
         ui.country.textContent = `${activeProperties.C_name} (${activeProperties.C_abb})`;
-        
+        ui.h3.textContent = `H3: ${activeProperties.h3_index}`;
         const val = activeProperties[`pm25_${currentYear}`];
         ui.pm.innerHTML = val ? `${parseFloat(val).toFixed(1)} <small style="font-size:0.5rem; color:#64748b;">µg</small>` : '—';
-
         const v98 = parseFloat(activeProperties.pm25_1998 || 0), v22 = parseFloat(activeProperties.pm25_2022 || 0);
         const diff = v22 - v98, per = v98 !== 0 ? (diff / v98 * 100).toFixed(0) : 0;
-        
         ui.summaryStat.textContent = `${per > 0 ? '+' : ''}${per}%`;
         ui.summaryStat.style.color = diff > 0 ? '#fca5a5' : '#86efac';
     }
@@ -212,37 +260,18 @@
         ui.yearLabel.textContent = currentYear;
         ui.slider.value = currentYear;
         if (map.getLayer('pm25-layer')) map.setPaintProperty('pm25-layer', 'fill-color', colorExpression(currentYear));
-        updateUI(); 
+        updateUI();
         if (trendChart) trendChart.update('none');
     }
 
-    // ── Map Setup ──
     map.on('load', () => {
-        map.addSource('pm25-data', { type: 'geojson', data: './data/pm25_hex_grid_processed.geojson' });
+        map.addSource('pm25-data', { type: 'vector', url: 'mapbox://pjmcn83.5u19e6io' });
         map.addSource('countries', { type: 'vector', url: 'mapbox://emilydugmore.48mjdbxk' });
 
-        map.addLayer({
-            id: 'country-hover', type: 'fill', source: 'countries', 'source-layer': 'country_data',
-            filter: ['==', ['get', 'C_abb'], ''],
-            paint: { 'fill-color': '#fff', 'fill-opacity': 0.12 }
-        });
-
-        map.addLayer({
-            id: 'pm25-layer', type: 'fill', source: 'pm25-data',
-            paint: { 'fill-color': colorExpression(currentYear), 'fill-opacity': 0.6, 'fill-outline-color': 'rgba(255,255,255,0.05)' }
-        });
-
-        map.addLayer({
-            id: 'country-selected-outline', type: 'line', source: 'countries', 'source-layer': 'country_data',
-            filter: ['==', ['get', 'C_abb'], ''],
-            paint: { 'line-color': '#fff', 'line-width': 3, 'line-opacity': 0.8, 'line-blur': 1, 'line-emissive-strength': 0.8 }
-        });
-
-        map.addLayer({
-            id: 'pm25-highlight', type: 'line', source: 'pm25-data',
-            filter: ['==', ['get', 'h3_index'], ''],
-            paint: { 'line-color': '#3b82f6', 'line-width': 2.5, 'line-emissive-strength': 1.0 }
-        });
+        map.addLayer({ id: 'country-hover', type: 'fill', source: 'countries', 'source-layer': 'country_data', filter: ['==', ['get', 'C_abb'], ''], paint: { 'fill-color': '#fff', 'fill-opacity': 0.12 } });
+        map.addLayer({ id: 'pm25-layer', type: 'fill', source: 'pm25-data', 'source-layer': 'pm25_hex_grid_processed-7tiqqq', minzoom: 2, paint: { 'fill-color': colorExpression(currentYear), 'fill-opacity': 0.6, 'fill-outline-color': 'rgba(255,255,255,0.05)', 'fill-emissive-strength': 1.0 } });
+        map.addLayer({ id: 'country-selected-outline', type: 'line', source: 'countries', 'source-layer': 'country_data', filter: ['==', ['get', 'C_abb'], ''], paint: { 'line-color': '#fff', 'line-width': 3, 'line-opacity': 0.8, 'line-blur': 1, 'line-emissive-strength': 0.8 } });
+        map.addLayer({ id: 'pm25-highlight', type: 'line', source: 'pm25-data', 'source-layer': 'pm25_hex_grid_processed-7tiqqq', minzoom: 0, filter: ['==', ['get', 'h3_index'], ''], paint: { 'line-color': '#3b82f6', 'line-width': 2.5, 'line-emissive-strength': 1.0 } });
 
         map.on('mousemove', 'pm25-layer', (e) => {
             if (!e.features.length) return;
@@ -260,7 +289,7 @@
             activeProperties = e.features[0].properties;
             const abb = activeProperties.C_abb;
 
-            ui.panel.classList.add('visible');
+            ui.panel.classList.add('visible'); document.body.classList.add('chart-visible');
             map.setFilter('pm25-highlight', ['==', ['get', 'h3_index'], activeProperties.h3_index]);
             map.setFilter('country-selected-outline', ['==', ['get', 'C_abb'], abb]);
 
@@ -275,28 +304,30 @@
                 }
             });
 
-            map.fitBounds(bounds || geoBounds(e.features[0].geometry), { 
-                padding: { top: 40, bottom: 220, left: 40, right: 40 }, duration: 1400, maxZoom: 8 
-            });
-
+            map.fitBounds(bounds || geoBounds(e.features[0].geometry), { padding: { top: 40, bottom: 250, left: 40, right: 40 }, duration: 1400, maxZoom: 8 });
             setTimeout(() => map.resize(), 500);
             updateUI(); updateChart(activeProperties);
         });
 
-        startAnimation();
+        map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+        map.addControl(new mapboxgl.ScaleControl(), 'bottom-right');
+        map.dragRotate.disable();
+        map.touchZoomRotate.disableRotation();
     });
 
-    // ── Interaction Logic ──
     ui.slider.addEventListener('input', (e) => { stopAnimation(); updateYear(e.target.value); });
     ui.playBtn.addEventListener('click', () => isPlaying ? stopAnimation() : startAnimation());
-    
+
     document.getElementById('refresh-button').addEventListener('click', () => {
         stopAnimation(); activeProperties = null;
-        ui.panel.classList.remove('visible');
+        ui.panel.classList.remove('visible'); document.body.classList.remove('chart-visible');
         map.setFilter('pm25-highlight', ['==', ['get', 'h3_index'], '']);
         map.setFilter('country-selected-outline', ['==', ['get', 'C_abb'], '']);
+        ui.country.textContent = 'Global View';
+        ui.h3.textContent = 'Click on a cell to see how local PM2.5 concentrations have changed over time.';
+        ui.pm.textContent = '—';
         setTimeout(() => map.resize(), 500);
-        map.flyTo({ ...MAP_DEFAULTS, zoom: 1.5 });
+        map.flyTo({ ...MAP_DEFAULTS });
     });
 
     function startAnimation() {
@@ -310,7 +341,6 @@
     }
 
     function updateChart(props) {
-        console.log("averagesData:", averagesData);
         const localData = YEARS.map(y => parseFloat(props[`pm25_${y}`] || 0));
         const trend = calculateTrendline(localData);
         ui.trendLabel.textContent = trend.slope > 0 ? "Condition: Worsening" : "Condition: Improving";
@@ -319,9 +349,9 @@
         const continentData = (averagesData && averagesData.continents) ? averagesData.continents[props.continent] : [];
 
         const datasets = [
-            { label: `Local PM2.5`, data: localData, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3 },
-            { label: `Trendline`, data: trend.values, borderColor: '#93c5fd', borderWidth: 1, borderDash: [4, 4], pointRadius: 0, fill: false },
-            { label: `${props.C_name} Avg`, data: countryData, borderColor: '#22c55e', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.25 },
+            { label: 'Local PM2.5', data: localData, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', borderWidth: 2.5, pointRadius: 0, fill: true, tension: 0.3 },
+            { label: 'Trendline', data: trend.values, borderColor: '#93c5fd', borderWidth: 1, borderDash: [4, 4], pointRadius: 0, fill: false },
+            { label: `${props.C_name} Avg`, data: countryData, borderColor: '#BF77F6', borderWidth: 1.5, pointRadius: 0, fill: false, tension: 0.25 },
             { label: `${props.continent} Avg`, data: continentData, borderColor: '#fbbf24', borderWidth: 1.5, borderDash: [8, 5], borderDashOffset: 2, pointRadius: 0, fill: false, tension: 0.25 }
         ];
 
@@ -333,13 +363,14 @@
                 type: 'line', data: { labels: YEARS, datasets },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    interaction: {mode: 'index', intersect: false,},
+                    interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        tooltip: { enabled: true, backgroundColor: 'rgba(7, 9, 15, 0.9)', titleFont: { family: 'Manrope', size: 12 }, bodyFont: { family: 'Manrope', size: 11 }, padding: 10, borderColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1 },
-                        legend: { display: true, position: 'top', align: 'end', labels: { color: '#64748b', font: { size: 9, family: 'Manrope' }, usePointStyle: true, pointStyle: 'line', pointStyleWidth: 16 } } },
+                        tooltip: { enabled: true, backgroundColor: 'rgba(7, 9, 15, 0.9)', titleFont: { family: 'Manrope', size: 12 }, bodyFont: { family: 'Manrope', size: 11 }, padding: 10, borderColor: 'rgba(255, 255, 255, 0.1)', borderWidth: 1, caretPadding: 20, caretSize: 6 },
+                        legend: { display: true, position: 'top', align: 'end', labels: { color: '#ffffff', font: { family: 'Manrope', size: 11 }, boxWidth: 10 } }
+                    },
                     scales: {
-                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9, family: 'Manrope' } } },
-                        y: { position: 'right', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 9, family: 'Manrope' } } }
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+                        y: { position: 'right', grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#64748b', font: { size: 9 } } }
                     }
                 }
             });
