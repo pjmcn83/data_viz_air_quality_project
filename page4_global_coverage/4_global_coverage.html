@@ -5,6 +5,7 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/legend.css">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
     <style>
         body {
@@ -31,53 +32,54 @@
         /* ── Legend ──────────────────────────────────────────────────────── */
         #legend {
             position: absolute;
-            bottom: 1.8rem;
+            top: 1.8rem;
             left: 1.4rem;
             z-index: 10;
-            background: #000000;
-            border: 1px solid rgba(255, 255, 255, 0.09);
-            padding: 0.9rem 1.1rem;
-            width: 230px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            padding: 1.2rem 1.4rem;
+            width: 290px;
             box-sizing: border-box;
             font-family: 'Manrope', sans-serif;
-            color: #e2e8f0;
+            color: var(--text);
         }
 
         .legend-title {
             font-family: 'Manrope', sans-serif;
-            font-size: 0.64rem;
-            letter-spacing: 0.12em;
-            color: #94a3b8;
-            margin-bottom: 0.65rem;
-            line-height: 1.5;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0;
+            color: #ffffff;
+            margin-bottom: 0.85rem;
+            line-height: 1.3;
         }
 
         .legend-bar {
             width: 100%;
-            height: 9px;
-            background: linear-gradient(to right, #ffffff 0%, #93c5fd 10%, #3b82f6 27%, #1d4ed8 100%);
-            margin-bottom: 0.3rem;
+            height: 12px;
+            background: linear-gradient(to right, #EBD6B5 0%, #E6BF7E 10%, #DEA854 27%, #CC7900 100%);
+            margin-bottom: 0.4rem;
         }
 
         .legend-scale-labels {
             display: flex;
             justify-content: space-between;
-            font-size: 0.63rem;
-            color: #64748b;
-            margin-bottom: 0.75rem;
+            font-size: 0.55rem;
+            color: #ffffff;
+            margin-bottom: 0.9rem;
         }
 
         .legend-zero {
             display: flex;
             align-items: center;
-            gap: 0.55rem;
-            font-size: 0.7rem;
-            color: #64748b;
+            gap: 0.7rem;
+            font-size: 0.8rem;
+            color: #ffffff;
         }
 
         .legend-stripe {
-            width: 22px;
-            height: 10px;
+            width: 28px;
+            height: 13px;
             flex-shrink: 0;
             background: repeating-linear-gradient(
                 45deg,
@@ -91,32 +93,32 @@
 
         .legend-divider {
             border: none;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-            margin: 0.7rem 0;
+            border-top: 1px solid var(--border);
+            margin: 0.9rem 0;
         }
 
         .legend-hint {
             font-family: 'Manrope', sans-serif;
-            font-size: 0.63rem;
-            color: #64748b;
-            line-height: 1.5;
-            margin-bottom: 0.5rem;
+            font-size: 0.8rem;
+            color: #ffffff;
+            line-height: 1.3;
+            margin-bottom: 0.65rem;
         }
 
         .legend-toggle {
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.6rem;
             width: 100%;
             background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.13);
-            color: #cbd5e1;
+            color: var(--text);
             font-family: 'Manrope', sans-serif;
-            font-size: 0.65rem;
-            padding: 0.4rem 0.6rem;
+            font-size: 0.8rem;
+            padding: 0.55rem 0.75rem;
             cursor: pointer;
             text-align: left;
-            margin-bottom: 0.55rem;
+            margin-bottom: 0.65rem;
             transition: background 0.2s, border-color 0.2s;
         }
 
@@ -125,14 +127,14 @@
         }
 
         .legend-toggle.active {
-            background: rgba(59, 130, 246, 0.15);
-            border-color: rgba(59, 130, 246, 0.4);
-            color: #93c5fd;
+            background: rgba(235, 148, 41, 0.15);
+            border-color: rgba(235, 148, 41, 0.4);
+            color: #eb9429;
         }
 
         .toggle-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             background: rgba(255, 255, 255, 0.25);
             flex-shrink: 0;
@@ -140,7 +142,7 @@
         }
 
         .legend-toggle.active .toggle-dot {
-            background: #3b82f6;
+            background: #eb9429;
         }
 
         /* ── Country stats panel ─────────────────────────────────────────── */
@@ -149,30 +151,24 @@
         }
 
         .cs-name {
-            font-size: 0.82rem;
-            font-weight: 700;
-            color: #e2e8f0;
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #ffffff;
             letter-spacing: 0.04em;
-            margin-bottom: 0.45rem;
+            margin-bottom: 0.55rem;
         }
 
         .cs-coverage {
-            font-size: 0.63rem;
-            color: #94a3b8;
-            line-height: 1.65;
-            margin-bottom: 0.4rem;
-        }
-
-        .cs-coverage strong {
-            color: #cbd5e1;
-            font-weight: 600;
+            font-size: 0.85rem;
+            color: #ffffff;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
         }
 
         .cs-rank {
-            font-size: 0.62rem;
-            color: #64748b;
-            line-height: 1.55;
-            font-style: italic;
+            font-size: 0.85rem;
+            color: #ffffff;
+            line-height: 1.3;
         }
     </style>
 </head>
@@ -181,7 +177,7 @@
     <div id="map"></div>
 
     <div id="legend">
-        <div class="legend-title">This map shows the % of the population located within 5km of an air sensor at the country level.</div>
+        <div class="legend-title">% of population located within 5km of an air sensor</div>
         <div class="legend-bar"></div>
         <div class="legend-scale-labels">
             <span>0%</span>
@@ -197,9 +193,9 @@
         <div class="legend-hint">Zoom in to see the exact locations of air sensors</div>
         <button id="pop-toggle" class="legend-toggle">
             <span class="toggle-dot"></span>
-            Add a population distribution layer
+            Add population distribution
         </button>
-        <div class="legend-hint">Click on a country to learn more</div>
+        <div class="legend-hint">Hover over a country to learn more</div>
 
         <div id="country-stats">
             <hr class="legend-divider">
@@ -279,6 +275,7 @@
 
         // ── Stats helpers ─────────────────────────────────────────────────────
         let maxRank = 0;
+        const noSensorCountries = new Set();
 
         function ordinal(n) {
             const s = ['th', 'st', 'nd', 'rd'];
@@ -289,26 +286,15 @@
         function formatPop(n) {
             if (!n || isNaN(n)) return 'unknown';
             n = Math.round(n);
-            if (n >= 1e9) return (n / 1e9).toFixed(1).replace(/\.0$/, '') + ' billion';
-            if (n >= 1e6) return (n / 1e6).toFixed(1).replace(/\.0$/, '') + ' million';
+            if (n >= 1e9) return Math.round(n / 1e9) + ' billion';
+            if (n >= 1e6) return Math.round(n / 1e6) + ' million';
             if (n >= 1e3) return Math.round(n / 1e3) + ' thousand';
             return n.toLocaleString();
         }
 
-        function getRankSentence(name, rank, total) {
+        function getRankSentence(name, rank) {
             if (!rank) return '';
-            const t = total || 180;
-            if (rank === 1) {
-                return `${name} has the highest air sensor coverage in the world.`;
-            }
-            if (rank <= 10) {
-                return `${name} has the ${ordinal(rank)} highest sensor coverage.`;
-            }
-            const pctFromTop = Math.round((rank / t) * 100);
-            if (pctFromTop <= 50) {
-                return `${name} is in the top ${pctFromTop}% of sensor coverage in the world.`;
-            }
-            return `${name} is in the bottom ${100 - pctFromTop}% of sensor coverage in the world.`;
+            return `${name} is ranked <strong style="color:#eb9429;font-weight:700;font-size:0.95rem;">${ordinal(rank)}</strong> for global sensor coverage.`;
         }
 
         function showCountryStats(props) {
@@ -319,16 +305,27 @@
             const rank       = props.cover_rank   != null ? Math.round(props.cover_rank)   : null;
 
             const sensorStr  = sensors != null ? sensors : '?';
-            const pctStr     = pct     != null ? pct.toFixed(1) + '%' : '?%';
+            const pctStr     = pct     != null ? Math.round(pct) + '%' : '?%';
             const popStr     = pop     != null ? formatPop(pop) : 'unknown';
 
+            const hi    = (val) => `<strong style="color:#eb9429;font-weight:700;font-size:0.95rem;">${val}</strong>`;
+            const hiRed = (val) => `<strong style="color:#ef4444;font-weight:700;font-size:0.95rem;">${val}</strong>`;
+
             document.getElementById('cs-name').textContent = name;
-            document.getElementById('cs-coverage').innerHTML =
-                `<strong>${name}</strong>'s <strong>${sensorStr}</strong> sensor${sensors !== 1 ? 's' : ''} ` +
-                `cover approximately <strong>${pctStr}</strong> of the country's ` +
-                `<strong>${popStr}</strong> inhabitants.`;
-            document.getElementById('cs-rank').textContent =
-                rank ? getRankSentence(name, rank, maxRank) : '';
+            if (!sensors) {
+                document.getElementById('cs-coverage').innerHTML =
+                    `There are ${hiRed('NO SENSORS')} covering <strong style="color:#ffffff;font-weight:700;">the country's</strong> ${hiRed(popStr)} inhabitants.`;
+            } else {
+                document.getElementById('cs-coverage').innerHTML =
+                    `${hi(sensorStr)} sensor${sensors !== 1 ? 's' : ''} cover approximately ` +
+                    `${hi(pctStr)} of the country's ${hi(popStr)} inhabitants.`;
+            }
+            if (!sensors) {
+                document.getElementById('cs-rank').innerHTML =
+                    `${name} is one of ${noSensorCountries.size} countries with no sensor coverage.`;
+            } else {
+                document.getElementById('cs-rank').innerHTML = getRankSentence(name, rank);
+            }
             document.getElementById('country-stats').style.display = 'block';
         }
 
@@ -342,6 +339,7 @@
                 if (!abb || !feat.geometry) continue;
                 const r = feat.properties.cover_rank;
                 if (r && r > maxRank) maxRank = r;
+                if (!feat.properties.no_sensors) noSensorCountries.add(abb);
                 try {
                     const b = geoBounds(feat.geometry);
                     if (!countryCache[abb]) {
@@ -376,6 +374,7 @@
 
         map.on('load', () => {
             map.setFog(null);
+            map.setMinZoom(1);
             map.addImage('stripes', makeStripePattern());
 
             // ── Country boundaries (vector) ──────────────────────────────────
@@ -396,12 +395,12 @@
                 paint: {
                     'fill-color': [
                         'interpolate', ['linear'], ['coalesce', ['get', 'C_S_per'], 0],
-                        0,  'rgba(233, 243, 255, 1)',
-                        10, 'rgba(147, 197, 253, 1)',
-                        26, 'rgba(59,  130, 246, 1)',
-                        97, 'rgba(29,  78,  216, 1)'
+                        0,  '#F2E4CE',
+                        10, '#E6BF7E',
+                        26, '#DEA854',
+                        80, '#CC7900'
                     ],
-                    'fill-emissive-strength': 0.6,
+                    'fill-emissive-strength': 1,
                     'fill-opacity': [
                         'interpolate', ['linear'], ['zoom'],
                         DETAIL_ZOOM - 0.5, 1,
@@ -464,16 +463,20 @@
                 maxzoom: DETAIL_ZOOM,
                 filter: ['>=', ['coalesce', ['get', 'C_S_per'], 0], 0.5],
                 paint: {
-                    'line-color': '#ffffff',
+                    'line-color': '#000000',
                     'line-emissive-strength': 1,
-                    'line-opacity': 1,
+                    'line-opacity': [
+                        'interpolate', ['linear'], ['zoom'],
+                        DETAIL_ZOOM - 0.5, 1,
+                        DETAIL_ZOOM,       0
+                    ],
                     'line-width': [
                         'interpolate', ['linear'], ['zoom'],
-                        1,  0.5,
-                        4,  1.2,
-                        8,  3.0,
-                        12, 5.0,
-                        15, 7.0
+                        1,  0.3,
+                        4,  0.8,
+                        8,  1.5,
+                        12, 2.5,
+                        15, 4.0
                     ]
                 }
             });
@@ -678,7 +681,7 @@
 
                 try {
                     map.fitBounds(bounds || geoBounds(e.features[0].geometry),
-                        { padding: 60, duration: 1400, maxZoom: 8 });
+                        { padding: { top: 60, bottom: 60, left: 330, right: 60 }, duration: 1400, maxZoom: 8 });
                 } catch (_) {
                     map.flyTo({ center: e.lngLat, zoom: 5, duration: 1400 });
                 }
@@ -686,6 +689,13 @@
         });
 
         map.on('idle', buildCountryCache);
+
+        // Clear selected outline on user-initiated pan or zoom (not on programmatic fitBounds)
+        map.on('movestart', (e) => {
+            if (e.originalEvent) {
+                map.setFilter('country-selected-outline', ['==', ['get', 'C_abb'], '']);
+            }
+        });
 
     </script>
 </body>
