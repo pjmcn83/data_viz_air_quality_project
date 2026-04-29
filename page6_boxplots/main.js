@@ -36,6 +36,12 @@ fetch("../data/cities.json")
   .catch(err => console.error("❌ Error:", err));
 
 
+// ── Helper function to identify Global North regions ────────
+function isGlobalNorth(region) {
+  const northernRegions = ["Europe", "Australia and New Zealand", "Northern America"];
+  return northernRegions.includes(region);
+}
+
 // ── Legend ────────────────────────────────────
 function buildLegend() {
   document.getElementById("legend").innerHTML = `
@@ -69,10 +75,15 @@ function buildChart(data) {
   container.innerHTML = "";
   if (!data.length) return;
 
-  const W = container.clientWidth || 900;
-  const H = container.clientHeight || 500;
+  const W = Math.max(container.clientWidth || 900, 600);
+  const H = Math.max(container.clientHeight || 500, 380);
 
-  const margin = { top: 18, right: 8, bottom: 55, left: 40 };
+  const margin = {
+    top: Math.max(18, H * 0.04),
+    right: Math.max(8, W * 0.01),
+    bottom: Math.max(55, H * 0.11),
+    left: Math.max(40, W * 0.04)
+  };
   const innerW = W - margin.left - margin.right;
   const innerH = H - margin.top - margin.bottom;
 
@@ -197,6 +208,15 @@ function buildChart(data) {
   // ── Draw boxplots and dots ────────────────────
   regionData.forEach(({ region, cities, cx, boxW, top3, bottom3,
     q1, median, q3, whiskerLo, whiskerHi }) => {
+    const isNorth = isGlobalNorth(region);
+
+    // Define colors based on region
+    const whiskerColor = isNorth ? "rgba(41,128,235,0.3)" : "rgba(235,148,41,0.3)";
+    const boxFillColor = isNorth ? "rgba(41,128,235,0.12)" : "rgba(235,148,41,0.12)";
+    const boxStrokeColor = isNorth ? "rgba(41,128,235,0.25)" : "rgba(235,148,41,0.25)";
+    const medianColor = isNorth ? "#2980eb" : "#eb9429";
+    const dotColor = isNorth ? "#2980eb" : "#eb9429";
+
     // Column background panel
     g.append("rect")
       .attr("x", xScale(region))
@@ -210,7 +230,7 @@ function buildChart(data) {
     g.append("line")
       .attr("x1", cx).attr("x2", cx)
       .attr("y1", yScale(q3)).attr("y2", yScale(whiskerHi))
-      .attr("stroke", "rgba(235,148,41,0.3)")
+      .attr("stroke", whiskerColor)
       .attr("stroke-width", 1.5)
       .attr("stroke-dasharray", "3,3");
 
@@ -218,7 +238,7 @@ function buildChart(data) {
     g.append("line")
       .attr("x1", cx).attr("x2", cx)
       .attr("y1", yScale(q1)).attr("y2", yScale(whiskerLo))
-      .attr("stroke", "rgba(235,148,41,0.3)")
+      .attr("stroke", whiskerColor)
       .attr("stroke-width", 1.5)
       .attr("stroke-dasharray", "3,3");
 
@@ -228,8 +248,8 @@ function buildChart(data) {
       .attr("y", yScale(q3))
       .attr("width", boxW)
       .attr("height", Math.max(1, yScale(q1) - yScale(q3)))
-      .attr("fill", "rgba(235,148,41,0.12)")
-      .attr("stroke", "rgba(235,148,41,0.25)")
+      .attr("fill", boxFillColor)
+      .attr("stroke", boxStrokeColor)
       .attr("stroke-width", 1)
       .attr("rx", 3);
 
@@ -237,7 +257,7 @@ function buildChart(data) {
     g.append("line")
       .attr("x1", cx - boxW / 2).attr("x2", cx + boxW / 2)
       .attr("y1", yScale(median)).attr("y2", yScale(median))
-      .attr("stroke", "#eb9429")
+      .attr("stroke", medianColor)
       .attr("stroke-width", 2);
 
     // Normal dots
@@ -247,7 +267,7 @@ function buildChart(data) {
       .attr("cx", d => cx + d._jitter)
       .attr("cy", d => yScale(+d.index))
       .attr("r", 3)
-      .attr("fill", "#eb9429")
+      .attr("fill", dotColor)
       .attr("opacity", 0.32)
       .style("cursor", "pointer")
       .on("mouseover", (event, d) => showTooltip(event, d))
@@ -303,10 +323,12 @@ function buildChart(data) {
   const labelOverrides = {
     "Colombo": { dx: -16, dy: 0, anchor: "end" },
     "Hamburg": { dx: 6, dy: 18, anchor: "start" },
+    "Havana": { dx: 0, dy: 18, anchor: "end" },
     "Hyderabad (Pak)": { dx: 0, dy: -18, anchor: "middle" },
     "Karachi": { dx: -16, dy: 0, anchor: "end" },
     "Kyiv": { dx: -16, dy: 0, anchor: "end" },
     "Mogadishu": { dx: -8, dy: -16, anchor: "end" },
+    "Port-au-Prince": { dx: -15, dy: -15, anchor: "start" },
     "Sydney": { dx: -16, dy: 0, anchor: "end" },
     "Touba": { dx: 0, dy: -18, anchor: "middle" },
   };
@@ -373,18 +395,24 @@ function buildChart(data) {
       .attr("opacity", 0.5);
 
     // Add legend text "North - South Divide" (vertical orientation)
-    g.append("text")
+    const divideText = g.append("text")
       .attr("x", 800)
       .attr("y", -20)
       .attr("text-anchor", "middle")
       .attr("dominant-baseline", "text-bottom")
-      .attr("fill", "#eb9429")
-      .attr("font-size", "15px")
+      .attr("font-size", "12px")
       .attr("font-family", "'Manrope', sans-serif")
       .attr("font-weight", "600")
       .attr("letter-spacing", "0.05em")
-      .attr("transform", `rotate(-90, ${divideX}, -15)`)
-      .text("North - South Divide");
+      .attr("transform", `rotate(-90, ${divideX}, -15)`);
+
+    divideText.append("tspan")
+      .attr("fill", "#2980eb")
+      .text("North");
+
+    divideText.append("tspan")
+      .attr("fill", "#eb9429")
+      .text(" - South Divide");
   }
 
   // ── Info box with Global North/South statistics ───────
@@ -506,7 +534,7 @@ function buildChart(data) {
   // Simpler approach: render the full text with color spans
   quoteText.html("");
 
-  const fullText = "The Global North contains 228,922,087 people distributed across 81 cities with populations over one million, whereas the Global South accounts for 1,665,354,511 people living in 434 cities of same size.";
+  const fullText = "The Global South contains 1,665,354,511 people distributed across 434 cities with populations over one million, whereas the Global North accounts for 228,922,087 people living in 81 cities of same size.";
 
   // Create a helper to intelligently split and color text
   const segments = [];
@@ -606,9 +634,12 @@ function buildChart(data) {
   }
 
   // ── Info box (Left - Bottom) - Global North/South average index ───
-  const boxX_sw = 200;
-  const boxY_sw = innerH - 90;
+  const boxW_sw = Math.min(innerW * 0.55, 540); 
+  const boxX_sw = Math.max(20, innerW * 0.02);   
+  const boxH_sw = 42;
+  const boxY_sw = innerH - boxH_sw - 16;          
   const boxPadding_sw = 12;
+
 
   // Text content with proper formatting
   const textX_sw = boxX_sw + boxPadding_sw;
@@ -628,14 +659,13 @@ function buildChart(data) {
     .style("visibility", "hidden");
 
   // Build text to calculate width
-  tempStatsText.append("tspan").text("Global North");
-  tempStatsText.append("tspan").text(" average index 0.32 vs. ");
   tempStatsText.append("tspan").text("Global South");
-  tempStatsText.append("tspan").text(" average index 0.51");
+  tempStatsText.append("tspan").text(" average index 0.51 vs. ");
+  tempStatsText.append("tspan").text("Global North");
+  tempStatsText.append("tspan").text("average index 0.32");
 
   // Estimate the bounding box
-  let estimatedWidth = 515; // Approximate width based on text length
-  const boxH_sw = 42;
+  let estimatedWidth = boxW_sw;
 
   // Remove temp text
   tempStatsText.remove();
@@ -665,24 +695,6 @@ function buildChart(data) {
 
   // Add text with color highlights  
   statsText.append("tspan")
-    .attr("fill", "#2980eb")
-    .attr("font-weight", "600")
-    .text("Global North");
-
-  statsText.append("tspan")
-    .attr("fill", "#e2e8f0")
-    .text(" average index ");
-
-  statsText.append("tspan")
-    .attr("fill", "#2980eb")
-    .attr("font-weight", "600")
-    .text("0.32");
-
-  statsText.append("tspan")
-    .attr("fill", "#e2e8f0")
-    .text(" vs. ");
-
-  statsText.append("tspan")
     .attr("fill", "#eb9429")
     .attr("font-weight", "600")
     .text("Global South");
@@ -695,6 +707,24 @@ function buildChart(data) {
     .attr("fill", "#eb9429")
     .attr("font-weight", "600")
     .text("0.51");
+
+  statsText.append("tspan")
+    .attr("fill", "#e2e8f0")
+    .text(" vs. ");
+
+  statsText.append("tspan")
+    .attr("fill", "#2980eb")
+    .attr("font-weight", "600")
+    .text("Global North");
+
+  statsText.append("tspan")
+    .attr("fill", "#e2e8f0")
+    .text(" average index ");
+
+  statsText.append("tspan")
+    .attr("fill", "#2980eb")
+    .attr("font-weight", "600")
+    .text("0.32");
 
   // ── X axis tick marks ─────────────────────────
   g.append("g")

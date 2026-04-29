@@ -55,13 +55,12 @@
             left: 1.4rem;
             z-index: 10;
             background: var(--bg-panel);
-            border: 1px solid var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             padding: 10px 16px;
-            border-radius: 10px;
+            border-radius: 0;
             font-family: 'Manrope', sans-serif;
+            color: #e2e8f0;
             font-size: 12px;
-            color: var(--text);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
             max-width: calc(100% - 40px);
             backdrop-filter: blur(10px);
             display: flex;
@@ -72,10 +71,11 @@
 
         .legend h4 {
             margin: 0;
-            font-size: 13px;
+            font-family: 'Manrope', sans-serif;
+            color: #e2e8f0;
+            font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: var(--accent);
             white-space: nowrap;
         }
 
@@ -91,7 +91,6 @@
             width: 18px;
             height: 18px;
             border-radius: 3px;
-            border: 1px solid var(--accent);
             flex-shrink: 0;
         }
 
@@ -108,13 +107,12 @@
             z-index: 10;
             transform: translateY(-50%);
             background: var(--bg-panel);
-            border: 1px solid var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.09);
             padding: 10px 16px;
-            border-radius: 10px;
+            border-radius: 0;
             font-family: 'Manrope', sans-serif;
             font-size: 12px;
-            color: var(--text);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            color: #e2e8f0;
             backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
@@ -126,7 +124,8 @@
             font-size: 13px;
             font-weight: 700;
             letter-spacing: 0.5px;
-            color: var(--accent);
+            font-family: 'Manrope', sans-serif;
+            color: #e2e8f0;
             text-align: center;
         }
 
@@ -807,19 +806,19 @@
             // Reset badge
             updateBadge(p, null);
 
-            // Limpiar gráfico
+            // Clear chart
             document.getElementById(`chart-${p}`).innerHTML = '';
 
-            // Si es slot 2 → ocultarlo completamente
+            // If slot 2 → hide it completely
             if (p === 2) {
                 document.getElementById('slot-2').style.display = 'none';
                 slotExpanded[2] = false;
 
-                // volver a mostrar botón "+"
+                // Show expand button again
                 document.getElementById('expand-btn-2').classList.remove('visible');
             }
 
-            // Si es slot 1 → volver a mostrar instrucción
+            // If slot 1 → show instruction again
             if (p === 1 && !selectedCities[2]) {
                 document.getElementById('cc-instruction').style.display = 'block';
             }
@@ -827,12 +826,12 @@
 
         // ── Radar chart ────────────────────────────────────────────────────
         const AXES = [
-            { key: 'sensors_norm', label: ['Sensors'] },
-            { key: 'greenness_norm', label: ['NDVI'] },
-            { key: 'death_pm2_norm', label: ['PM2.5', 'Mortality'] },
-            { key: 'density_norm', label: ['Density'] },
-            { key: 'land_consumption_norm', label: ['Land', 'Consumption'] },
-            { key: 'hdi_norm', label: ['HDI'] },
+            { key: 'sensors_norm', label: ['Sensor', 'Deficit'], invert: false },
+            { key: 'greenness_norm', label: ['Greenness', "Deficit"], invert: false },
+            { key: 'death_pm2_norm', label: ['PM2.5', 'Mortality'], invert: false },
+            { key: 'density_norm', label: ['Pop.', 'Density'], invert: false },
+            { key: 'land_consumption_norm', label: ['Land', 'Consumption'], invert: false },
+            { key: 'hdi_norm', label: ['HDI', "Deficit"], invert: false },
         ];
 
         const COLOR = {
@@ -857,6 +856,17 @@
                 .attr('width', size).attr('height', size)
                 .attr('viewBox', `0 0 ${size} ${size}`)
                 .style('overflow', 'visible');
+
+            svg.append('text')
+                .attr('x', cx).attr('y', 14)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#eb9429')
+                .attr('font-size', '11px')
+                .attr('font-weight', '600')
+                .attr('font-family', "'Manrope', sans-serif")
+                .attr('letter-spacing', '0.08em')
+                .attr('opacity', 0.75)
+                .text('VULNERABILITY PROFILE');
 
             const defs = svg.append('defs');
             const gradId = `radar-grad-${p}`;
@@ -897,17 +907,16 @@
                     .attr('stroke', '#2a4060').attr('stroke-width', 1)
                     .attr('stroke-dasharray', '2,3').attr('opacity', 0.6);
                 const cosA = Math.cos(a);
-                const lateralBoost = Math.abs(cosA) > 0.3 ? 22 : 0;
-                const lr = R + 26 + lateralBoost;
+                const lateralBoost = Math.abs(cosA) > 0.3 ? 26 : 0;
+                const lr = R + 17 + lateralBoost;
                 const lx = cx + lr * Math.cos(a), ly = cy + lr * Math.sin(a);
 
-                // Tipo de label (string vs array para multi-línea)
+                // Label type (string vs array for multi-line)
                 const lines = Array.isArray(axis.label) ? axis.label : [axis.label];
                 const lineHeight = 13;
-                // Ajuste vertical: si está abajo, las líneas extra van debajo;
-                // si está arriba, todas las líneas suben juntas
-                const isBottom = Math.sin(a) > 0.3;
-                const yOffset = isBottom ? 4 : -5 - (lines.length - 1) * lineHeight;
+                // Vertical adjustment: if below, extra lines go below; if above, all lines move up together
+                const isBottom = Math.sin(a) > 0.2;
+                const yOffset = isBottom ? 3 : -5 - (lines.length - 1) * lineHeight;
 
                 const textEl = svg.append('text')
                     .attr('x', lx).attr('y', ly + yOffset)
@@ -922,8 +931,13 @@
                         .text(line.toUpperCase());
                 });
             });
-            const values = AXES.map(ax => { const v = city[ax.key]; return isNaN(v) ? 0 : Math.max(0, Math.min(1, v)); });
-            const polyPts = values.map((v, i) => {
+            const values = AXES.map(ax => {
+                let v = city[ax.key];
+                if (isNaN(v)) return 0;
+                v = Math.max(0, Math.min(1, v));
+                // Invert if the axis represents a "good" attribute to standardize direction
+                return ax.invert ? 1 - v : v;
+            }); const polyPts = values.map((v, i) => {
                 const a = angle * i - Math.PI / 2;
                 return `${cx + v * R * Math.cos(a)},${cy + v * R * Math.sin(a)}`;
             }).join(' ');
@@ -956,7 +970,24 @@
                     .attr('font-family', "'JetBrains Mono', monospace").text(v.toFixed(3));
                 dot.on('mouseover', () => { dot.attr('r', 7); tip.transition().duration(120).attr('opacity', 1); })
                     .on('mouseout', () => { dot.attr('r', 5); tip.transition().duration(120).attr('opacity', 0); });
+
             });
+
+            // Axis direction legend
+            const legendY = size - 10;
+            const legendG = svg.append('g').attr('opacity', 0.7);
+
+            legendG.append('text')
+                .attr('x', cx).attr('y', legendY + 3)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#eb9429')
+                .attr('font-size', '10px')
+                .attr('font-style', 'italic')
+                .attr('font-family', "'Manrope', sans-serif")
+                .attr('opacity', 0.8)
+                .text('The larger the area, the more vulnerable the city');
+
+
         }
     </script>
 </body>
