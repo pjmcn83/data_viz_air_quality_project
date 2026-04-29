@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+    <link href="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.css" rel="stylesheet">
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.9.0/mapbox-gl.js"></script>
+    <style>
+        body { margin: 0; padding: 0; background: #07090f; }
+        #map { width: 100%; height: 100vh; }
+        .mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib { display: none !important; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZW1pbHlkdWdtb3JlIiwiYSI6ImNta285NjZiZzAzMzQza3M5ZmRodHp6ZDcifQ.geVyLy4fYjBWRAGJSbwN-g';
+
+    const AFRICA_CODES = [
+        '111',
+        'AGO','BDI','BEN','BFA','BWA','CAF','CIV','CMR','COD','COG','COM','CPV',
+        'DJI','DZA','EGY','ERI','ESH','ETH','GAB','GHA','GIN','GMB','GNB','GNQ',
+        'KEN','LBR','LBY','LSO','MAR','MDG','MLI','MOZ','MRT','MWI','NAM','NER',
+        'NGA','RWA','SDN','SEN','SLE','SOM','SSD','STP','SWZ','SYC','TCD','TGO',
+        'TUN','TZA','UGA','ZAF','ZMB','ZWE'
+    ];
+
+    const map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/emilydugmore/cmneoxtrw003a01r11o2c6f7f',
+        bounds: [[-18, -35], [52, 38]],
+        fitBoundsOptions: { padding: 5 },
+        projection: 'mercator'
+    });
+
+    const sensorsReady = fetch('./data/africa_simple.geojson')
+        .then(r => r.json())
+        .then(data => data.features[0].geometry);
+
+    map.on('load', () => {
+        map.setFog(null);
+
+        map.addSource('countries', {
+            type: 'vector',
+            url: 'mapbox://emilydugmore.48mjdbxk'
+        });
+
+        map.addLayer({
+            id: 'country-fill',
+            type: 'fill',
+            slot: 'middle',
+            source: 'countries',
+            'source-layer': 'country_data',
+            paint: {
+                'fill-color': 'rgba(255, 255, 255, 0.07)',
+                'fill-emissive-strength': 0.6
+            }
+        });
+
+        map.addLayer({
+            id: 'africa-highlight',
+            type: 'fill',
+            slot: 'middle',
+            source: 'countries',
+            'source-layer': 'country_data',
+            filter: ['in', ['get', 'C_abb'], ['literal', AFRICA_CODES]],
+            paint: {
+                'fill-color': 'rgba(251, 146, 60, 0.3)',
+                'fill-emissive-strength': 0.7
+            }
+        });
+
+        map.addLayer({
+            id: 'country-outline',
+            type: 'line',
+            slot: 'middle',
+            source: 'countries',
+            'source-layer': 'country_data',
+            filter: ['in', ['get', 'C_abb'], ['literal', AFRICA_CODES]],
+            paint: {
+                'line-color': 'rgba(251, 146, 60, 0.2)',
+                'line-width': [
+                    'interpolate', ['linear'], ['zoom'],
+                    4, 0.4,
+                    7, 0.8,
+                    10, 1.5
+                ],
+                'line-emissive-strength': 1
+            }
+        });
+
+        map.addSource('sensors', {
+            type: 'vector',
+            url: 'mapbox://emilydugmore.96ka7gjb'
+        });
+
+        sensorsReady.then(geometry => {
+            map.addLayer({
+                id: 'africa-sensor-dots',
+                type: 'circle',
+                slot: 'top',
+                source: 'sensors',
+                'source-layer': 'AQICN_sensors-5r58jr',
+                filter: ['within', geometry],
+                paint: {
+                    'circle-emissive-strength': 1,
+                    'circle-color': '#eb9429',
+                    'circle-radius': [
+                        'interpolate', ['linear'], ['zoom'],
+                        3,  2,
+                        6,  3,
+                        9,  5,
+                        12, 7,
+                        15, 9
+                    ],
+                    'circle-stroke-width': 0.8,
+                    'circle-stroke-color': '#000000',
+                    'circle-opacity': 1,
+                    'circle-stroke-opacity': 1
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

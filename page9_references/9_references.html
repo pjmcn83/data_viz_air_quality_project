@@ -1,12 +1,174 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>References</title>
-  <link rel="stylesheet" href="../styles/global.css">
-  <style>body { display:flex; align-items:center; justify-content:center; height:100vh; }</style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>References</title>
+    <link rel="stylesheet" href="../styles/global.css">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 3rem 4rem;
+            overflow: hidden;
+        }
+
+        /* ── Title ─────────────────────────────────────────────────────── */
+        .page-title {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+            margin-bottom: 2rem;
+            flex-shrink: 0;
+        }
+
+        /* ── Two-column body ────────────────────────────────────────────── */
+        .body-columns {
+            display: flex;
+            gap: 5vw;
+            flex: 1;
+            min-height: 0;
+            margin-bottom: 1rem;
+        }
+
+        .col { flex: 1; display: flex; flex-direction: column; }
+
+        /* ── Sub-headings ───────────────────────────────────────────────── */
+        .sub-heading {
+            font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        /* ── Data sources table ─────────────────────────────────────────── */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(0.78rem, 1vw, 0.92rem);
+        }
+
+        thead th {
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 0.4rem 0.75rem 0.4rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            letter-spacing: 0.04em;
+            font-size: clamp(0.7rem, 0.9vw, 0.82rem);
+            text-transform: uppercase;
+        }
+
+        tbody td {
+            padding: 0.55rem 0.75rem 0.55rem 0;
+            vertical-align: top;
+            color: rgba(255,255,255,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            line-height: 1.5;
+        }
+
+        tbody td a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        tbody td a:hover { opacity: 0.75; text-decoration: underline; }
+
+        /* ── Methodology footer ─────────────────────────────────────────── */
+        .methodology {
+            flex-shrink: 0;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 1.2rem;
+        }
+
+        .methodology .sub-heading {
+            border-bottom: none;
+            padding-bottom: 0;
+            margin-bottom: 0.6rem;
+        }
+
+        .methodology p {
+            font-size: clamp(0.82rem, 1vw, 0.95rem);
+            color: rgba(255,255,255,0.7);
+            line-height: 1.6;
+        }
+
+        .methodology a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .methodology a:hover { opacity: 0.75; text-decoration: underline; }
+    </style>
 </head>
 <body>
-  <h2 style="color:var(--accent);">References — coming soon</h2>
+
+    <h2 class="page-title">About the page</h2>
+
+    <div class="body-columns">
+
+        <!-- Left: Data Sources -->
+        <div class="col">
+            <div class="sub-heading">Data Sources</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Owner</th>
+                        <th>Dataset</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>AQICN</td>
+                        <td><a href="https://aqicn.org/json-api/doc/" target="_blank">Air Sensor Points</a></td>
+                        <td>Point locations of air sensors globally — accessed via the AQICN API</td>
+                    </tr>
+                    <tr>
+                        <td>GeoBoundaries</td>
+                        <td><a href="https://www.geoboundaries.org/globalDownloads.html" target="_blank">Country Boundaries</a></td>
+                        <td>Polygons of country boundaries globally</td>
+                    </tr>
+                    <tr>
+                        <td>European Commission Joint Research Centre</td>
+                        <td><a href="https://human-settlement.emergency.copernicus.eu/download.php?ds=pop" target="_blank">GHS Gridded Population</a></td>
+                        <td>Gridded raster layer of global population density</td>
+                    </tr>
+                    <tr>
+                        <td>European Commission Joint Research Centre</td>
+                        <td><a href="https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php" target="_blank">GHS Urban Centres Data Base</a></td>
+                        <td>Polygons of Urban Centres (cities) globally</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Right: Research Sources -->
+        <div class="col">
+            <div class="sub-heading">Research Sources</div>
+        </div>
+
+    </div>
+
+    <!-- Methodology -->
+    <div class="methodology">
+        <div class="sub-heading">Methodology</div>
+        <p>To see a full outline of the methodologies used, <a href="https://github.com/SSoubie/data_viz_air_quality_project/tree/main/methodologies" target="_blank">click here</a>.</p>
+    </div>
+
 </body>
 </html>
