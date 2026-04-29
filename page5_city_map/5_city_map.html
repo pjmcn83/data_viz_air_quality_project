@@ -1,21 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>City Vulnerability Map</title>
 
+    <link rel="stylesheet" href="../styles/global.css">
     <link href="https://api.mapbox.com/mapbox-gl-js/v3.18.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v3.18.0/mapbox-gl.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
-            width: 100vw; height: 100vh;
-            overflow: hidden; background: #07090f;
-            display: flex; align-items: center; justify-content: center;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Manrope', sans-serif;
         }
 
         #map-container {
@@ -23,156 +34,462 @@
             height: calc(100vh - 12vh);
             margin-top: 4vh;
             border: 4px solid #000000;
-            position: relative; overflow: hidden;
+            position: relative;
+            overflow: hidden;
         }
 
-        #map { width: 100%; height: 100%; }
-        .mapboxgl-ctrl-logo, .mapboxgl-ctrl-attrib { display: none !important; }
+        #map {
+            width: 100%;
+            height: 100%;
+        }
+
+        .mapboxgl-ctrl-logo,
+        .mapboxgl-ctrl-attrib {
+            display: none !important;
+        }
 
         /* ── Legend ──────────────────────────────────────────────────────── */
         .legend {
             position: absolute;
-            bottom: 1.8rem; left: 1.4rem; z-index: 10;
-            background: rgba(7, 9, 15, 0.92);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 14px 16px; border-radius: 10px;
-            font-family: 'Syne', sans-serif; font-size: 12px;
-            color: #c8dae8; box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            max-width: 210px; backdrop-filter: blur(10px);
+            bottom: 1.8rem;
+            left: 1.4rem;
+            z-index: 10;
+            background: var(--bg-panel);
+            border: 1px solid var(--accent);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            color: var(--text);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            max-width: calc(100% - 40px);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
         }
+
         .legend h4 {
-            margin: 0 0 10px 0; font-size: 13px; font-weight: 700;
-            text-align: center; letter-spacing: 0.5px; color: #38bdf8;
+            margin: 0;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            white-space: nowrap;
         }
-        .legend-item { display: flex; align-items: center; margin-bottom: 8px; gap: 8px; }
-        .legend-color { width: 18px; height: 18px; border-radius: 3px; border: 1px solid rgba(255,255,255,0.2); flex-shrink: 0; }
-        .legend-item span { font-size: 11px; line-height: 1.3; }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            border: 1px solid var(--accent);
+            flex-shrink: 0;
+        }
+
+        .legend-item span {
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+        /* ── Legend (Radius) ────────────────────────────────────────────── */
+        .legend-radius {
+            position: absolute;
+            top: 50%;
+            right: 1.4rem;
+            z-index: 10;
+            transform: translateY(-50%);
+            background: var(--bg-panel);
+            border: 1px solid var(--accent);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-family: 'Manrope', sans-serif;
+            font-size: 12px;
+            color: var(--text);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .legend-radius h4 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--accent);
+            text-align: center;
+        }
+
+        .legend-radius-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 12px;
+        }
+
+        .legend-radius-circle-container {
+            width: 50px;
+            height: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .legend-radius-circle {
+            border: 1px solid var(--accent);
+            border-radius: 50%;
+            background: rgba(56, 189, 248, 0.1);
+            flex-shrink: 0;
+        }
+
+        .legend-radius-item span {
+            font-size: 11px;
+            line-height: 1.3;
+        }
 
         /* ── Compare overlay ─────────────────────────────────────────────── */
         #compare-overlay {
-            position: absolute; top: 46px; left: 12px; z-index: 19;
-            display: flex; flex-direction: row;
-            width: auto; max-width: calc(100% - 24px);
+            position: absolute;
+            top: 46px;
+            left: 12px;
+            z-index: 19;
+            display: flex;
+            flex-direction: row;
+            width: auto;
+            max-width: calc(100% - 24px);
             max-height: calc(100% - 24px);
-            background: rgba(6, 10, 18, 0.95);
-            border: 1px solid #1a2d45; border-radius: 8px;
-            backdrop-filter: blur(16px); overflow: auto;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            backdrop-filter: blur(16px);
+            overflow: auto;
         }
 
         /* ── Instruction ─────────────────────────────────────────────────── */
         #cc-instruction {
             padding-bottom: 0.6rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.62rem; letter-spacing: 0.04em; line-height: 1.6;
-            letter-spacing: 0.04em; color: #6b84a0;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.62rem;
+            letter-spacing: 0.04em;
+            line-height: 1.6;
+            color: var(--text-muted);
         }
 
         /* ── Slots ───────────────────────────────────────────────────────── */
-        .cc-slot { width: 280px; flex-shrink: 0; padding: 0.75rem 1rem; }
-        .cc-slot + .cc-slot { border-left: 1px solid #1a2d45; }
+        .cc-slot {
+            width: 280px;
+            flex-shrink: 0;
+            padding: 0.75rem 1rem;
+        }
+
+        .cc-slot+.cc-slot {
+            border-left: 1px solid var(--border);
+        }
 
         /* ── Selectors ───────────────────────────────────────────────────── */
-        .cc-selectors { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.35rem; }
-        .cc-select-group { display: flex; flex-direction: column; gap: 0.18rem; }
+        .cc-selectors {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 0.35rem;
+        }
+
+        .cc-select-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.18rem;
+        }
+
         .cc-select-group label {
-            font-family: 'JetBrains Mono', monospace; font-size: 0.52rem;
-            text-transform: uppercase; letter-spacing: 0.12em; color: #4a6080;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.52rem;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
         }
+
         .cc-select-group select {
-            background: #0d1420; border: 1px solid #1a2d45; color: #dde6f0;
-            padding: 0.28rem 0.45rem; font-family: 'Syne', sans-serif; font-size: 0.68rem;
-            cursor: pointer; width: 100%; border-radius: 4px; appearance: none;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.28rem 0.45rem;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.68rem;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+            appearance: none;
         }
-        .cc-select-group select:focus { outline: none; border-color: #38bdf8; }
-        #slot-2 .cc-select-group select:focus { border-color: #f472b6; }
-        #slot-3 .cc-select-group select:focus { border-color: #a78bfa; }
+
+        .cc-select-group select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        #slot-2 .cc-select-group select:focus {
+            border-color: var(--accent);
+        }
 
         /* ── Slot body (badge + chart — hidden until city selected) ──────── */
-        .cc-slot-body { display: none; flex-direction: column; gap: 0.5rem; margin-top: 0.6rem; }
-        .cc-slot-body.visible { display: flex; }
+        .cc-slot-body {
+            display: none;
+            flex-direction: column;
+            gap: 0.5rem;
+            margin-top: 0.6rem;
+        }
+
+        .cc-slot-body.visible {
+            display: flex;
+        }
 
         /* ── Badge ───────────────────────────────────────────────────────── */
         .cc-badge {
-            display: flex; align-items: stretch;
-            background: #0d1420; border: 1px solid #1a2d45;
-            border-radius: 6px; flex-shrink: 0; overflow: hidden; min-height: 50px;
+            display: flex;
+            align-items: stretch;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            flex-shrink: 0;
+            overflow: hidden;
+            min-height: 50px;
         }
-        #badge-1 { border-left: 3px solid #38bdf8; }
-        #badge-2 { border-left: 3px solid #f472b6; }
-        #badge-3 { border-left: 3px solid #a78bfa; }
-        .cc-badge-left { display: flex; align-items: center; gap: 0.55rem; padding: 0.45rem 0.7rem; flex: 1; min-width: 0; }
-        .cc-badge-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .cc-dot-1 { background: #38bdf8; box-shadow: 0 0 8px rgba(56,189,248,0.5); }
-        .cc-dot-2 { background: #f472b6; box-shadow: 0 0 8px rgba(244,114,182,0.5); }
-        .cc-dot-3 { background: #a78bfa; box-shadow: 0 0 8px rgba(167,139,250,0.5); }
-        .cc-badge-info { flex: 1; min-width: 0; }
+
+        #badge-1 {
+            border-left: 3px solid #38bdf8;
+        }
+
+        #badge-2 {
+            border-left: 3px solid #f472b6;
+        }
+
+        .cc-badge-left {
+            display: flex;
+            align-items: center;
+            gap: 0.55rem;
+            padding: 0.45rem 0.7rem;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .cc-badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .cc-dot-1 {
+            background: #38bdf8;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.5);
+        }
+
+        .cc-dot-2 {
+            background: #f472b6;
+            box-shadow: 0 0 8px rgba(244, 114, 182, 0.5);
+        }
+
+        .cc-badge-info {
+            flex: 1;
+            min-width: 0;
+        }
+
         .cc-badge-city {
-            font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700; color: #dde6f0;
-            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+
         .cc-badge-meta {
-            font-family: 'JetBrains Mono', monospace; font-size: 0.56rem; color: #6b84a0;
-            margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.56rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
+
         .cc-badge-right {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 0.45rem 0.75rem; border-left: 1px solid #1a2d45;
-            min-width: 64px; flex-shrink: 0; gap: 2px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0.45rem 0.75rem;
+            border-left: 1px solid var(--border);
+            min-width: 64px;
+            flex-shrink: 0;
+            gap: 2px;
         }
-        .cc-badge-score { font-family: 'JetBrains Mono', monospace; font-size: 1rem; font-weight: 700; line-height: 1; }
-        #badge-score-1 { color: #38bdf8; }
-        #badge-score-2 { color: #f472b6; }
-        #badge-score-3 { color: #a78bfa; }
-        .cc-badge-label { font-family: 'JetBrains Mono', monospace; font-size: 0.48rem; letter-spacing: 0.12em; color: #4a6080; text-transform: uppercase; }
-        .cc-badge-bar { width: 100%; height: 3px; background: #1a2d45; border-radius: 2px; margin-top: 3px; overflow: hidden; }
-        .cc-badge-bar-fill { height: 100%; border-radius: 2px; width: 0%; transition: width 0.7s cubic-bezier(0.4,0,0.2,1); }
-        #badge-1 .cc-badge-bar-fill { background: linear-gradient(90deg, rgba(56,189,248,0.5),  #38bdf8); }
-        #badge-2 .cc-badge-bar-fill { background: linear-gradient(90deg, rgba(244,114,182,0.5), #f472b6); }
-        #badge-3 .cc-badge-bar-fill { background: linear-gradient(90deg, rgba(167,139,250,0.5), #a78bfa); }
+
+        .cc-badge-score {
+            font-family: 'Manrope', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        #badge-score-1 {
+            color: var(--accent);
+        }
+
+        #badge-score-2 {
+            color: var(--accent);
+        }
+
+        .cc-badge-label {
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.48rem;
+            letter-spacing: 0.12em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .cc-badge-bar {
+            width: 100%;
+            height: 3px;
+            background: var(--border);
+            border-radius: 2px;
+            margin-top: 3px;
+            overflow: hidden;
+        }
+
+        .cc-badge-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            width: 0%;
+            transition: width 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        #badge-1 .cc-badge-bar-fill {
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.5), #38bdf8);
+        }
+
+        #badge-2 .cc-badge-bar-fill {
+            background: linear-gradient(90deg, rgba(244, 114, 182, 0.5), #f472b6);
+        }
 
         /* ── Chart row (chart + expand button) ───────────────────────────── */
-        .cc-chart-row { display: flex; align-items: center; gap: 8px; }
+        .cc-chart-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
         .cc-chart-area {
-            flex: 1; display: flex; align-items: center; justify-content: center;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             height: 260px;
         }
-        .cc-chart-area svg { max-width: 100%; max-height: 100%; overflow: visible; }
+
+        .cc-chart-area svg {
+            max-width: 100%;
+            max-height: 100%;
+            overflow: visible;
+        }
 
         .cc-expand-btn {
-            width: 28px; height: 28px; flex-shrink: 0;
-            background: rgba(255,255,255,0.04);
-            border: 1px solid #1a2d45; border-radius: 4px;
-            color: #4a6080; font-size: 18px; font-weight: 300; line-height: 1;
-            cursor: pointer; display: none;
-            align-items: center; justify-content: center;
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-muted);
+            font-size: 18px;
+            font-weight: 300;
+            line-height: 1;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
             transition: border-color 0.2s, color 0.2s;
         }
-        .cc-expand-btn:hover { border-color: #38bdf8; color: #38bdf8; }
-        .cc-expand-btn.visible { display: flex; }
+
+        .cc-expand-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .cc-expand-btn.visible {
+            display: flex;
+        }
 
         /* ── Empty chart state ───────────────────────────────────────────── */
-        .cc-chart-empty { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+        .cc-chart-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
         .cc-chart-empty-text {
-            font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
-            letter-spacing: 0.1em; text-transform: uppercase; color: #4a6080; text-align: center;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.6rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        /* ── Close button ───────────────────────────────────────────── */
+        .cc-close-btn {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 15px;
+            height: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            color: var(--text-muted);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cc-close-btn:hover {
+            color: #f87171;
+            border-color: #f87171;
         }
     </style>
 </head>
+
 <body>
     <div id="map-container">
         <div id="map"></div>
         <div id="legend" class="legend"></div>
+        <div id="legend-radius" class="legend-radius"></div>
 
         <div id="compare-overlay">
             <!-- Slot 1 -->
             <div class="cc-slot" id="slot-1">
+                <button class="cc-close-btn" data-slot="1">×</button>
                 <div id="cc-instruction">
                     Click cities on the map or select one<br>by region and country.
                 </div>
                 <div class="cc-selectors">
-                    <div class="cc-select-group"><label for="region-1">Region</label><select id="region-1"></select></div>
-                    <div class="cc-select-group"><label for="country-1">Country</label><select id="country-1"></select></div>
+                    <div class="cc-select-group"><label for="region-1">Region</label><select id="region-1"></select>
+                    </div>
+                    <div class="cc-select-group"><label for="country-1">Country</label><select id="country-1"></select>
+                    </div>
                     <div class="cc-select-group"><label for="city-1">City</label><select id="city-1"></select></div>
                 </div>
                 <div class="cc-slot-body" id="body-1">
@@ -187,7 +504,9 @@
                         <div class="cc-badge-right">
                             <div class="cc-badge-score" id="badge-score-1">—</div>
                             <div class="cc-badge-label">INDEX</div>
-                            <div class="cc-badge-bar"><div class="cc-badge-bar-fill"></div></div>
+                            <div class="cc-badge-bar">
+                                <div class="cc-badge-bar-fill"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="cc-chart-row">
@@ -199,9 +518,12 @@
 
             <!-- Slot 2 (hidden until expanded) -->
             <div class="cc-slot" id="slot-2" style="display:none">
+                <button class="cc-close-btn" data-slot="2">×</button>
                 <div class="cc-selectors">
-                    <div class="cc-select-group"><label for="region-2">Region</label><select id="region-2"></select></div>
-                    <div class="cc-select-group"><label for="country-2">Country</label><select id="country-2"></select></div>
+                    <div class="cc-select-group"><label for="region-2">Region</label><select id="region-2"></select>
+                    </div>
+                    <div class="cc-select-group"><label for="country-2">Country</label><select id="country-2"></select>
+                    </div>
                     <div class="cc-select-group"><label for="city-2">City</label><select id="city-2"></select></div>
                 </div>
                 <div class="cc-slot-body" id="body-2">
@@ -216,41 +538,14 @@
                         <div class="cc-badge-right">
                             <div class="cc-badge-score" id="badge-score-2">—</div>
                             <div class="cc-badge-label">INDEX</div>
-                            <div class="cc-badge-bar"><div class="cc-badge-bar-fill"></div></div>
+                            <div class="cc-badge-bar">
+                                <div class="cc-badge-bar-fill"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="cc-chart-row">
                         <div class="cc-chart-area" id="chart-2"></div>
-                        <button class="cc-expand-btn" id="expand-btn-3">+</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Slot 3 (hidden until expanded) -->
-            <div class="cc-slot" id="slot-3" style="display:none">
-                <div class="cc-selectors">
-                    <div class="cc-select-group"><label for="region-3">Region</label><select id="region-3"></select></div>
-                    <div class="cc-select-group"><label for="country-3">Country</label><select id="country-3"></select></div>
-                    <div class="cc-select-group"><label for="city-3">City</label><select id="city-3"></select></div>
-                </div>
-                <div class="cc-slot-body" id="body-3">
-                    <div class="cc-badge" id="badge-3">
-                        <div class="cc-badge-left">
-                            <span class="cc-badge-dot cc-dot-3"></span>
-                            <div class="cc-badge-info">
-                                <div class="cc-badge-city" id="badge-city-3">—</div>
-                                <div class="cc-badge-meta" id="badge-meta-3">—</div>
-                            </div>
-                        </div>
-                        <div class="cc-badge-right">
-                            <div class="cc-badge-score" id="badge-score-3">—</div>
-                            <div class="cc-badge-label">INDEX</div>
-                            <div class="cc-badge-bar"><div class="cc-badge-bar-fill"></div></div>
-                        </div>
-                    </div>
-                    <div class="cc-chart-row">
-                        <div class="cc-chart-area" id="chart-3"></div>
-                        <!-- no expand button for slot 3 -->
+                        <button class="cc-expand-btn" id="expand-btn-2">+</button>
                     </div>
                 </div>
             </div>
@@ -263,8 +558,10 @@
 
         const map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/ssoubiee/cmo8spj0q002p01s53y6ictc7',
-            center: [0, 20], zoom: 1.8, projection: 'mercator'
+            style: 'mapbox://styles/emilydugmore/cmneoxtrw003a01r11o2c6f7f',
+            center: [10, 20],
+            zoom: 1.0,
+            projection: 'mercator'
         });
 
         const breaks = [0.1981127, 0.337149, 0.4216144, 0.4852908, 0.5424533, 0.598436, 0.7022134];
@@ -277,14 +574,57 @@
             title.textContent = 'Air Quality Index';
             legend.appendChild(title);
             for (let i = 0; i < colors.length; i++) {
-                const item     = document.createElement('div'); item.className = 'legend-item';
+                const item = document.createElement('div'); item.className = 'legend-item';
                 const colorBox = document.createElement('div'); colorBox.className = 'legend-color'; colorBox.style.backgroundColor = colors[i];
-                const label    = document.createElement('span');
-                if (i === 0)                    label.textContent = `< ${breaks[1].toFixed(2)}`;
-                else if (i === colors.length-1) label.textContent = `> ${breaks[breaks.length-1].toFixed(2)}`;
-                else                            label.textContent = `${breaks[i].toFixed(2)} – ${breaks[i+1].toFixed(2)}`;
+                const label = document.createElement('span');
+                if (i === 0) label.textContent = `< ${breaks[1].toFixed(2)}`;
+                else if (i === colors.length - 1) label.textContent = `> ${breaks[breaks.length - 1].toFixed(2)}`;
+                else label.textContent = `${breaks[i].toFixed(2)} – ${breaks[i + 1].toFixed(2)}`;
                 item.appendChild(colorBox); item.appendChild(label); legend.appendChild(item);
             }
+        }
+
+        function createRadiusLegend() {
+            const legendRadius = document.getElementById('legend-radius');
+            legendRadius.innerHTML = '';
+            const title = document.createElement('h4');
+            title.textContent = 'City Population';
+            legendRadius.appendChild(title);
+
+            // Define 4 representative population values
+            const radiusData = [
+                { population: 1000000, label: '1M' },
+                { population: 5000000, label: '5M' },
+                { population: 25000000, label: '25M' },
+                { population: 50000000, label: '50M' }
+            ];
+
+            radiusData.forEach(data => {
+                const item = document.createElement('div');
+                item.className = 'legend-radius-item';
+
+                // Calculate radius based on the interpolation formula from the map
+                const lnPop = Math.log(data.population);
+                const radius = 6 + (lnPop - 13.81663) * (22 - 6) / (17.57642 - 13.81663);
+
+                // Create container for circle (fixed width to align circles on same axis)
+                const circleContainer = document.createElement('div');
+                circleContainer.className = 'legend-radius-circle-container';
+
+                const circle = document.createElement('div');
+                circle.className = 'legend-radius-circle';
+                circle.style.width = (radius * 2) + 'px';
+                circle.style.height = (radius * 2) + 'px';
+
+                circleContainer.appendChild(circle);
+
+                const label = document.createElement('span');
+                label.textContent = data.label;
+
+                item.appendChild(circleContainer);
+                item.appendChild(label);
+                legendRadius.appendChild(item);
+            });
         }
 
         map.addControl(new mapboxgl.NavigationControl());
@@ -326,16 +666,23 @@
             map.on('mouseleave', 'cities-circles', () => { map.getCanvas().style.cursor = ''; });
 
             createLegend();
+            createRadiusLegend();
         });
 
 
         // ── Compare panel ─────────────────────────────────────────────────
         let DATA = [];
-        const selectedCities = { 1: null, 2: null, 3: null };
-        const slotExpanded   = { 1: true,  2: false, 3: false };
+        const selectedCities = { 1: null, 2: null };
+        const slotExpanded = { 1: true, 2: false };
 
         document.getElementById('expand-btn-2').addEventListener('click', () => expandSlot(2));
-        document.getElementById('expand-btn-3').addEventListener('click', () => expandSlot(3));
+
+        document.querySelectorAll('.cc-close-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const slot = parseInt(e.target.dataset.slot);
+                closeSlot(slot);
+            });
+        });
 
         function expandSlot(p) {
             slotExpanded[p] = true;
@@ -348,7 +695,7 @@
             .then(r => r.json())
             .then(data => {
                 DATA = data.map(stripBOM);
-                initSelectors(1); initSelectors(2); initSelectors(3);
+                initSelectors(1); initSelectors(2);
             })
             .catch(err => console.error('Error loading cities.json:', err));
 
@@ -364,12 +711,12 @@
 
         // ── Selectors ─────────────────────────────────────────────────────
         function initSelectors(p) {
-            populateSelect(`region-${p}`,  [...new Set(DATA.map(d => d.region))].sort(),  'All regions');
+            populateSelect(`region-${p}`, [...new Set(DATA.map(d => d.region))].sort(), 'All regions');
             populateSelect(`country-${p}`, [...new Set(DATA.map(d => d.country))].sort(), 'All countries');
-            populateSelect(`city-${p}`,    [], 'Select a city...');
-            document.getElementById(`region-${p}`).addEventListener('change',  () => onRegionChange(p));
+            populateSelect(`city-${p}`, [], 'Select a city...');
+            document.getElementById(`region-${p}`).addEventListener('change', () => onRegionChange(p));
             document.getElementById(`country-${p}`).addEventListener('change', () => onCountryChange(p));
-            document.getElementById(`city-${p}`).addEventListener('change',    () => onCityChange(p));
+            document.getElementById(`city-${p}`).addEventListener('change', () => onCityChange(p));
         }
 
         function populateSelect(id, options, placeholder) {
@@ -379,17 +726,17 @@
         }
 
         function onRegionChange(p) {
-            const region   = document.getElementById(`region-${p}`).value;
+            const region = document.getElementById(`region-${p}`).value;
             const filtered = region ? DATA.filter(d => d.region === region) : DATA;
             populateSelect(`country-${p}`, [...new Set(filtered.map(d => d.country))].sort(), 'All countries');
-            populateSelect(`city-${p}`,    [], 'Select a city...');
+            populateSelect(`city-${p}`, [], 'Select a city...');
         }
 
         function onCountryChange(p) {
-            const region  = document.getElementById(`region-${p}`).value;
+            const region = document.getElementById(`region-${p}`).value;
             const country = document.getElementById(`country-${p}`).value;
-            let filtered  = DATA;
-            if (region)  filtered = filtered.filter(d => d.region  === region);
+            let filtered = DATA;
+            if (region) filtered = filtered.filter(d => d.region === region);
             if (country) filtered = filtered.filter(d => d.country === country);
             populateSelect(`city-${p}`, [...new Set(filtered.map(d => d.city))].sort(), 'Select a city...');
         }
@@ -403,14 +750,14 @@
         function addCityFromMap(cityName) {
             const city = DATA.find(d => d.city === cityName);
             if (!city) return;
-            for (let p = 1; p <= 3; p++) {
+            for (let p = 1; p <= 2; p++) {
                 if (!selectedCities[p]) {
                     if (!slotExpanded[p]) expandSlot(p);
                     setCity(p, city);
                     return;
                 }
             }
-            // All 3 full: replace slot 1 only
+            // All 2 full: replace slot 1 only
             setCity(1, city);
         }
 
@@ -421,8 +768,8 @@
             updateBadge(p, city);
             drawRadar(p, city);
             document.getElementById(`body-${p}`).classList.add('visible');
-            // Show "+" for next slot if not yet expanded and p < 3
-            if (p < 3 && !slotExpanded[p + 1]) {
+            // Show "+" for next slot if not yet expanded and p < 2
+            if (p < 2 && !slotExpanded[p + 1]) {
                 document.getElementById(`expand-btn-${p + 1}`).classList.add('visible');
             }
         }
@@ -433,7 +780,7 @@
             document.getElementById(`badge-meta-${p}`).textContent = city
                 ? `${city.country} · ${city.region}` : '—';
             const scoreEl = document.getElementById(`badge-score-${p}`);
-            const fill    = document.querySelector(`#badge-${p} .cc-badge-bar-fill`);
+            const fill = document.querySelector(`#badge-${p} .cc-badge-bar-fill`);
             if (city && typeof city.index === 'number') {
                 scoreEl.textContent = city.index.toFixed(3);
                 if (fill) {
@@ -448,29 +795,60 @@
             }
         }
 
+        function closeSlot(p) {
+            selectedCities[p] = null;
+
+            // Ocultar contenido
+            document.getElementById(`body-${p}`).classList.remove('visible');
+
+            // Reset selects
+            document.getElementById(`city-${p}`).value = '';
+
+            // Reset badge
+            updateBadge(p, null);
+
+            // Limpiar gráfico
+            document.getElementById(`chart-${p}`).innerHTML = '';
+
+            // Si es slot 2 → ocultarlo completamente
+            if (p === 2) {
+                document.getElementById('slot-2').style.display = 'none';
+                slotExpanded[2] = false;
+
+                // volver a mostrar botón "+"
+                document.getElementById('expand-btn-2').classList.remove('visible');
+            }
+
+            // Si es slot 1 → volver a mostrar instrucción
+            if (p === 1 && !selectedCities[2]) {
+                document.getElementById('cc-instruction').style.display = 'block';
+            }
+        }
+
         // ── Radar chart ────────────────────────────────────────────────────
         const AXES = [
-            { key: 'hdi_norm',              label: 'HDI',         good: '↓' },
-            { key: 'greenness_norm',        label: 'Greenness',   good: '↓' },
-            { key: 'sensors_norm',          label: 'Sensors',     good: '↓' },
-            { key: 'density_norm',          label: 'Density',     good: '↑' },
-            { key: 'death_pm2_norm',        label: 'PM2.5 Mort.', good: '↑' },
-            { key: 'land_consumption_norm', label: 'Land Use',    good: '↑' },
+            { key: 'sensors_norm', label: ['Sensors'] },
+            { key: 'greenness_norm', label: ['NDVI'] },
+            { key: 'death_pm2_norm', label: ['PM2.5', 'Mortality'] },
+            { key: 'density_norm', label: ['Density'] },
+            { key: 'land_consumption_norm', label: ['Land', 'Consumption'] },
+            { key: 'hdi_norm', label: ['HDI'] },
         ];
+
         const COLOR = {
-            1: { stroke: '#38bdf8', fill: 'rgba(56,189,248,0.10)'  },
-            2: { stroke: '#f472b6', fill: 'rgba(244,114,182,0.10)' },
-            3: { stroke: '#a78bfa', fill: 'rgba(167,139,250,0.10)' },
+            1: { stroke: '#38bdf8', fill: 'rgba(56,189,248,0.22)' },
+            2: { stroke: '#f472b6', fill: 'rgba(244,114,182,0.22)' },
+            3: { stroke: '#a78bfa', fill: 'rgba(167,139,250,0.22)' },
         };
 
         function drawRadar(p, city) {
             const container = document.getElementById(`chart-${p}`);
             container.innerHTML = '';
-            const W    = container.clientWidth  || 280;
-            const H    = container.clientHeight || 260;
+            const W = container.clientWidth || 280;
+            const H = container.clientHeight || 260;
             const size = Math.min(W, H, 440);
             const margin = size > 320 ? 88 : Math.round(size * 0.3);
-            const R  = (size / 2) - margin;
+            const R = (size / 2) - margin;
             const cx = size / 2, cy = size / 2;
             const angle = (2 * Math.PI) / AXES.length;
             const c = COLOR[p];
@@ -480,61 +858,83 @@
                 .attr('viewBox', `0 0 ${size} ${size}`)
                 .style('overflow', 'visible');
 
-            const defs   = svg.append('defs');
+            const defs = svg.append('defs');
             const gradId = `radar-grad-${p}`;
-            const grad   = defs.append('radialGradient').attr('id', gradId)
+            const grad = defs.append('radialGradient').attr('id', gradId)
                 .attr('cx', '50%').attr('cy', '50%').attr('r', '50%');
-            grad.append('stop').attr('offset',   '0%').attr('stop-color', c.stroke).attr('stop-opacity', 0.06);
+            grad.append('stop').attr('offset', '0%').attr('stop-color', c.stroke).attr('stop-opacity', 0.06);
             grad.append('stop').attr('offset', '100%').attr('stop-color', c.stroke).attr('stop-opacity', 0);
             svg.append('circle').attr('cx', cx).attr('cy', cy).attr('r', R).attr('fill', `url(#${gradId})`);
 
             for (let lv = 1; lv <= 5; lv++) {
-                const r   = (R / 5) * lv;
+                const r = (R / 5) * lv;
                 const pts = AXES.map((_, i) => {
                     const a = angle * i - Math.PI / 2;
                     return `${cx + r * Math.cos(a)},${cy + r * Math.sin(a)}`;
                 }).join(' ');
                 svg.append('polygon').attr('points', pts)
-                    .attr('fill', lv % 2 === 0 ? 'rgba(26,45,69,0.4)' : 'none')
-                    .attr('stroke', '#1a2d45').attr('stroke-width', 1);
-                svg.append('text').attr('x', cx + 4).attr('y', cy - r + 3)
-                    .attr('fill', '#2d4a66').attr('font-size', '8px')
-                    .attr('font-family', "'JetBrains Mono', monospace")
-                    .text((lv / 5).toFixed(1));
+                    .attr('fill', lv % 2 === 0 ? 'rgba(56,189,248,0.03)' : 'none')
+                    .attr('stroke', '#2a4060')
+                    .attr('stroke-width', lv === 5 ? 1.4 : 0.8)
+                    .attr('stroke-dasharray', lv === 5 ? 'none' : '2,3');
+                svg.append('circle')
+                    .attr('cx', cx).attr('cy', cy).attr('r', 2)
+                    .attr('fill', '#2a4060')
+                    .attr('stroke', '#3a5578').attr('stroke-width', 1);
+                if (lv === 5 || lv === 3 || lv === 1) {
+                    svg.append('text').attr('x', cx + 4).attr('y', cy - r + 3)
+                        .attr('fill', '#5a7595').attr('font-size', '8px')
+                        .attr('font-family', "'JetBrains Mono', monospace")
+                        .attr('opacity', 0.5)
+                        .text((lv / 5).toFixed(1));
+                }
             }
 
             AXES.forEach((axis, i) => {
-                const a   = angle * i - Math.PI / 2;
-                const x2  = cx + R * Math.cos(a), y2 = cy + R * Math.sin(a);
+                const a = angle * i - Math.PI / 2;
+                const x2 = cx + R * Math.cos(a), y2 = cy + R * Math.sin(a);
                 svg.append('line').attr('x1', cx).attr('y1', cy).attr('x2', x2).attr('y2', y2)
-                    .attr('stroke', '#1a2d45').attr('stroke-width', 1.5);
-                const lr     = R + 34;
-                const lx     = cx + lr * Math.cos(a), ly = cy + lr * Math.sin(a);
-                const anchor = Math.cos(a) > 0.15 ? 'start' : Math.cos(a) < -0.15 ? 'end' : 'middle';
-                svg.append('text').attr('x', lx).attr('y', ly - 5)
-                    .attr('text-anchor', anchor).attr('fill', '#8aa5c0')
-                    .attr('font-size', '10.5px').attr('font-weight', '700')
-                    .attr('font-family', "'Syne', sans-serif").attr('letter-spacing', '0.03em')
-                    .text(axis.label);
-                svg.append('text').attr('x', lx).attr('y', ly + 9)
-                    .attr('text-anchor', anchor)
-                    .attr('fill', axis.good === '↑' ? '#f87171' : '#4ade80')
-                    .attr('font-size', '8.5px').attr('font-family', "'JetBrains Mono', monospace")
-                    .text(axis.good === '↑' ? '↑ worse' : '↓ worse');
-            });
+                    .attr('stroke', '#2a4060').attr('stroke-width', 1)
+                    .attr('stroke-dasharray', '2,3').attr('opacity', 0.6);
+                const cosA = Math.cos(a);
+                const lateralBoost = Math.abs(cosA) > 0.3 ? 22 : 0;
+                const lr = R + 26 + lateralBoost;
+                const lx = cx + lr * Math.cos(a), ly = cy + lr * Math.sin(a);
 
-            const values  = AXES.map(ax => { const v = city[ax.key]; return isNaN(v) ? 0 : Math.max(0, Math.min(1, v)); });
+                // Tipo de label (string vs array para multi-línea)
+                const lines = Array.isArray(axis.label) ? axis.label : [axis.label];
+                const lineHeight = 13;
+                // Ajuste vertical: si está abajo, las líneas extra van debajo;
+                // si está arriba, todas las líneas suben juntas
+                const isBottom = Math.sin(a) > 0.3;
+                const yOffset = isBottom ? 4 : -5 - (lines.length - 1) * lineHeight;
+
+                const textEl = svg.append('text')
+                    .attr('x', lx).attr('y', ly + yOffset)
+                    .attr('text-anchor', 'middle').attr('fill', '#cfdbe8')
+                    .attr('font-size', '11.5px').attr('font-weight', '700')
+                    .attr('font-family', "'Syne', sans-serif").attr('letter-spacing', '0.05em');
+
+                lines.forEach((line, idx) => {
+                    textEl.append('tspan')
+                        .attr('x', lx).attr('dy', idx === 0 ? 0 : lineHeight)
+                        .attr('text-anchor', 'middle')
+                        .text(line.toUpperCase());
+                });
+            });
+            const values = AXES.map(ax => { const v = city[ax.key]; return isNaN(v) ? 0 : Math.max(0, Math.min(1, v)); });
             const polyPts = values.map((v, i) => {
                 const a = angle * i - Math.PI / 2;
                 return `${cx + v * R * Math.cos(a)},${cy + v * R * Math.sin(a)}`;
             }).join(' ');
             svg.append('polygon').attr('points', polyPts)
                 .attr('fill', c.fill).attr('stroke', c.stroke)
-                .attr('stroke-width', 2).attr('stroke-linejoin', 'round')
+                .attr('stroke-width', 2.5).attr('stroke-linejoin', 'round')
+                .attr('filter', `drop-shadow(0 0 6px ${c.stroke}55)`)
                 .attr('opacity', 0).transition().duration(600).ease(d3.easeCubicOut).attr('opacity', 1);
 
             values.forEach((v, i) => {
-                const a  = angle * i - Math.PI / 2;
+                const a = angle * i - Math.PI / 2;
                 const vx = cx + v * R * Math.cos(a), vy = cy + v * R * Math.sin(a);
                 const dot = svg.append('circle')
                     .attr('cx', vx).attr('cy', vy).attr('r', 5)
@@ -544,7 +944,7 @@
                 const tipW = 92, tipH = 34;
                 const tipX = vx + (Math.cos(a) >= 0 ? 10 : -tipW - 10);
                 const tipY = vy - tipH / 2;
-                const tip  = svg.append('g').attr('opacity', 0).attr('pointer-events', 'none');
+                const tip = svg.append('g').attr('opacity', 0).attr('pointer-events', 'none');
                 tip.append('rect').attr('x', tipX).attr('y', tipY).attr('width', tipW).attr('height', tipH).attr('rx', 5)
                     .attr('fill', '#0d1420').attr('stroke', c.stroke).attr('stroke-width', 1);
                 tip.append('text').attr('x', tipX + tipW / 2).attr('y', tipY + 12)
@@ -555,9 +955,10 @@
                     .attr('font-size', '11px').attr('font-weight', '700')
                     .attr('font-family', "'JetBrains Mono', monospace").text(v.toFixed(3));
                 dot.on('mouseover', () => { dot.attr('r', 7); tip.transition().duration(120).attr('opacity', 1); })
-                   .on('mouseout',  () => { dot.attr('r', 5); tip.transition().duration(120).attr('opacity', 0); });
+                    .on('mouseout', () => { dot.attr('r', 5); tip.transition().duration(120).attr('opacity', 0); });
             });
         }
     </script>
 </body>
+
 </html>

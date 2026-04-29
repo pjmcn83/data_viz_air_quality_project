@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="../styles/global.css">
     <style>
         body {
-            width: 100vw; height: 100vh;
+            width: 100vw;
+            height: 100vh;
             background: var(--bg);
             color: var(--text);
             display: flex;
@@ -19,7 +21,7 @@
             top: 18%;
             left: 5%;
             right: 5%;
-            text-align: right;
+            text-align: left;
         }
 
         h2 {
@@ -28,7 +30,7 @@
             letter-spacing: -0.02em;
             color: var(--accent);
             margin-bottom: 0.5rem;
-            padding-right: 3%;
+            padding-left: 3%;
         }
 
         h3 {
@@ -37,7 +39,7 @@
             letter-spacing: 0.05em;
             color: #ffffff;
             margin-bottom: 1.2rem;
-            padding-right: 3%;
+            padding-left: 3%;
         }
 
         .paragraph-main {
@@ -58,17 +60,43 @@
             margin-bottom: 0;
         }
 
-        .hl { color: var(--accent); font-weight: 700; }
+        .hl {
+            color: var(--accent);
+            font-weight: 700;
+        }
     </style>
 </head>
+
 <body>
     <div class="intro-wrap">
         <h2>Introduction</h2>
         <h3>The global state of air quality monitoring</h3>
         <div class="paragraph-main">
-            <p>Air pollution is the greatest <span class="hl">environmental threat</span> to human health, causing an estimated seven million premature deaths worldwide each year. The most dangerous of these pollutants is <span class="hl">PM2.5</span> (particulate matter smaller than 2.5 micrometers), which leads to and exacerbates numerous health conditions and impairs cognitive development in children.</p>
-            <p>In 2023, only 9% of globally reporting cities and 7% of countries achieved the WHO annual <span class="hl">PM2.5</span> guideline value of 5 µg/m³, highlighting the need for <span class="hl">action</span> across the globe to reduce air pollution. <span class="hl">Long-term monitoring</span> of air pollutants is a fundamental step in addressing air quality issues. It allows for more informed health interventions, the provision of economic incentives and the implementation of policies.</p>
-            <p>However, <span class="hl">inequalities</span> emerge in the way global air quality is measured. This site explores the spatial distribution of air quality sensors worldwide, and investigates the potential mechanisms driving gaps.</p>
+            <p>
+                Air pollution is one of the most the most serious <span class="hl">environmental threats</span> to human
+                health nowadays, causing an estimated seven million premature deaths worldwide each year. Many are the
+                agents that contaminate the environment and modifies the characteristics of the atmosphere. However, the
+                most dangerous are those with a particulate matter smaller than 2.5 micrometers <span
+                    class="hl">(PM2.5)</span>, which leads to the exacerbation of numerous health conditions and the
+                impairment of cognitive development in children.
+            </p>
+
+            <p>
+                In 2023, <span class="hl">just 9% of globally reporting cities and 7% of countries achieved the World
+                    Health Organization annual PM2.5 guideline value of 5 µg/m³</span>, highlighting the need for <span
+                    class="hl">collective and coordinated actions</span> across the globe. In this context, the first
+                and fundamental step in addressing air quality issues is the development of solid and comparable <span
+                    class="hl">long-term monitoring</span> of air conditions. A basic requirement for more informed
+                public health policies, effective climate action, and the achievement of the Sustainable Development
+                Goals.
+            </p>
+
+            <p>
+                However, <span class="hl">the way in which global air quality is measured is uneven</span>, producing
+                flawed policies, misallocation of resources and incorrect prioritization between the Global South and
+                the Global North. Tacking this into account, this site explores the unequal spatial distribution of air
+                quality sensors worldwide, and investigates the potential mechanisms driving gaps.
+            </p>
         </div>
     </div>
     <script>
@@ -78,4 +106,5 @@
         }, { passive: false });
     </script>
 </body>
+
 </html>
