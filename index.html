@@ -84,7 +84,7 @@
             top: 18%;
             left: 5%;
             right: 5%;
-            text-align: right;
+            text-align: left;
         }
 
         .intro-wrap h2 {
@@ -93,7 +93,7 @@
             letter-spacing: -0.02em;
             color: var(--accent);
             margin-bottom: 0.5rem;
-            padding-right: 3%;
+            padding-left: 3%;
         }
 
         .intro-wrap h3 {
@@ -102,7 +102,7 @@
             letter-spacing: 0.05em;
             color: #ffffff;
             margin-bottom: 1.2rem;
-            padding-right: 3%;
+            padding-left: 3%;
         }
 
         .paragraph-main {
@@ -110,13 +110,15 @@
             text-align: justify;
             padding: 3%;
             line-height: 1.75;
-            font-size: clamp(0.85rem, 1.15vw, 1rem);
+            font-size: clamp(0.95rem, 1.25vw, 1.1rem);
             overflow-y: auto;
             max-height: 58vh;
         }
 
         .paragraph-main p { margin-bottom: 1.2em; }
         .paragraph-main p:last-child { margin-bottom: 0; }
+        .reflection-section .paragraph-main { padding-top: 0.5rem; }
+        .reflection-section .intro-wrap { top: 12%; }
         .hl { color: var(--accent); font-weight: 700; }
 
         /* ── MAP + SIDEBAR LAYOUT ─────────────────────── */
@@ -277,6 +279,7 @@
             line-height: 1.55;
             margin-bottom: 0.75vh;
             flex-shrink: 0;
+            text-align: justify;
         }
 
         .case-study-name {
@@ -355,8 +358,207 @@
             font-size: clamp(0.9rem, 1.15vw, 1.05rem);
             color: #ffffff;
             line-height: 1.7;
-            text-align: center;
+            text-align: justify;
             max-width: 420px;
+        }
+
+        /* ── PAGE 9 — REFERENCES & TEAM ────────────────────────────────── */
+        .refs-wrap {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 2.5rem 4rem 1.5rem;
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .page-title {
+            font-size: clamp(2rem, 3.5vw, 3rem);
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: -0.02em;
+            margin-bottom: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .body-columns {
+            display: flex;
+            gap: 5vw;
+            flex: 1;
+            min-height: 0;
+            margin-bottom: 1rem;
+        }
+
+        .col { flex: 1; display: flex; flex-direction: column; }
+
+        .sub-heading {
+            font-size: clamp(0.95rem, 1.3vw, 1.15rem);
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            flex-shrink: 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+        }
+
+        .refs-wrap table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: clamp(0.78rem, 1vw, 0.92rem);
+        }
+
+        .refs-wrap thead th {
+            text-align: left;
+            font-weight: 600;
+            color: var(--accent);
+            padding: 0.4rem 0.75rem 0.4rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            letter-spacing: 0.04em;
+            font-size: clamp(0.7rem, 0.9vw, 0.82rem);
+            text-transform: uppercase;
+        }
+
+        .refs-wrap tbody td {
+            padding: 0.25rem 0.75rem 0.25rem 0;
+            vertical-align: top;
+            color: rgba(255,255,255,0.8);
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            line-height: 1.5;
+        }
+
+        .refs-wrap tbody td a {
+            color: var(--accent);
+            text-decoration: none;
+            transition: opacity 0.15s;
+        }
+
+        .refs-wrap tbody td a:hover { opacity: 0.75; text-decoration: underline; }
+
+        .team-divider {
+            flex-shrink: 0;
+            height: 1px;
+            background: rgba(255,255,255,0.1);
+            margin-bottom: 1.25rem;
+        }
+
+        .team-section {
+            flex-shrink: 0;
+            text-align: center;
+            padding-bottom: 0.5rem;
+        }
+
+        .team-grid {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+        }
+
+        .member-card {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar-ring {
+            width: 140px;
+            height: 140px;
+            flex-shrink: 0;
+            border-radius: 50%;
+            padding: 2px;
+            background: conic-gradient(from 180deg, var(--accent), rgba(235,148,41,0.6), var(--accent));
+            box-shadow: 0 0 16px rgba(235,148,41,0.2);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .avatar-ring:hover {
+            box-shadow: 0 0 24px rgba(235,148,41,0.35);
+            transform: scale(1.04);
+        }
+
+        .avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: rgba(7,9,15,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .avatar-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .member-name {
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            color: #ffffff;
+            transition: opacity 0.2s;
+        }
+
+        .github-link:hover { opacity: 0.7; }
+
+        .github-link svg {
+            width: 22px;
+            height: 22px;
+            fill: currentColor;
+        }
+
+        .refs-footer {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .github-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.5rem 1.2rem;
+            border-radius: 999px;
+            border: 1px solid rgba(235,148,41,0.3);
+            background: transparent;
+            color: var(--text);
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.88rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: border-color 0.25s, color 0.25s, background 0.25s;
+        }
+
+        .github-btn:hover {
+            border-color: var(--accent);
+            color: var(--text);
+            background: rgba(235,148,41,0.08);
+        }
+
+        .github-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+            flex-shrink: 0;
         }
     </style>
 </head>
@@ -368,11 +570,10 @@
     <a href="#pm25">PM2.5 Trends</a>
     <a href="#measure">Global Coverage</a>
     <a href="#vulnerability">City Vulnerability</a>
-    <a href="#stats">City Ranking</a>
+    <a href="#stats">Regional Disparities</a>
     <a href="#reasons">Explore Reasons</a>
     <a href="#reflection">Reflection</a>
-    <a href="#references">References</a>
-    <a href="#authors">Authors</a>
+    <a href="#references">About</a>
 </nav>
 
 
@@ -397,10 +598,9 @@
             <div class="paragraph-main">
                 <p>
                 Air pollution is one of the most the most serious <span class="hl">environmental threats</span> to human
-                health, causing an estimated seven million premature deaths worldwide each year. Many are the
-                agents that contaminate the environment and modifies the characteristics of the atmosphere. However, the
-                most dangerous are those with a particulate matter smaller than 2.5 micrometers <span
-                    class="hl">(PM2.5)</span>, which leads to the exacerbation of numerous health conditions and the
+                health, causing an estimated seven million premature deaths worldwide each year. However, the
+                most dangerous of these pollutants are particualte matter with a diameter  smaller than 2.5 micrometers - <span
+                    class="hl">PM2.5</span> - which leads to the exacerbation of numerous health conditions and the
                 impairment of cognitive development in children.
             </p>
 
@@ -429,11 +629,12 @@
         <div class="map-section">
             <iframe id="pm25-frame" class="map-frame" src="page3_remote_sensing/3_remote_sensing.html"></iframe>
             <div class="sidebar">
-                <div class="sidebar-title">PM2.5 Trends</div>
-                <div class="sidebar-subtitle">How has air quality changed over time?</div>
-                <p>This map shows <span class="hl">annual mean PM2.5 concentrations</span> across the globe from 1998 to 2022, aggregated into hexagonal grid cells.</p>
-                <p>Use the <span class="hl">year slider</span> or press <span class="hl">Play</span> to animate changes over time. <span class="hl">Click any cell</span> to see a full time-series chart for that location alongside country and continent averages.</p>
-                <span class="note">Data source: Global Annual PM2.5 Grids (GBD-MAPS). Units: µg/m³.</span>
+                <div>
+                    <div class="sidebar-title">PM2.5 Trends</div>
+                    <div class="sidebar-subtitle">How has air quality changed over time?</div>
+                </div>
+                <p>From 1998 to 2022, improvements in PM2.5 concentrations are seen for much of the Global North. This is contrasted with <span class="hl">persistently high or worsening concentrations across the Global South</span> that frequently exceed WHO thresholds - particularly through West and South Asia, South America, and Africa.</p>
+                <p>Whilst <em>remotely sensed pollutant concentrations</em> provide vast geographical/temporal reach, it remains a necessity to monitor ground level data to fully understand the air quality people experience at a local level.</p>
             </div>
         </div>
     </div>
@@ -456,16 +657,18 @@
             <iframe id="vulnerability-frame" class="map-frame" src="page5_city_map/5_city_map.html"></iframe>
             <div class="sidebar">
                 <div class="sidebar-title">City Vulnerability</div>
-                <div class="sidebar-subtitle">Which cities face the greatest air quality risk?</div>
-                <p>This map shows the <span class="hl">Air Quality Vulnerability Index</span> for cities with populations over one million — a composite score reflecting pollution exposure, sensor coverage, and population density.</p>
-                <p>Cities are coloured from <span class="hl">low</span> to <span class="hl">high</span> vulnerability. <span class="hl">Zoom in</span> to reveal individual city boundaries shaded by their score.</p>
+                <div class="sidebar-subtitle">Which cities are more exposed to air pollution?</div>
+                <p>Unequal distribution of sensors around the world <span class="hl">invisibilize certain communities</span> and affects our ability to apply effective solutions where are at dire need.</p>
+                <p>This map shows the <span class="hl">Air Quality Vulnerability Index</span> for cities with over one million hab.</p>
+                <p>A composite score that helps us to <span class="hl">compare cities' needs for sensors according to their pollution exposure, sensor coverage, and built environment.</span></p>
                 <span class="note">Click any city to see its country, region, and exact index score.</span>
             </div>
         </div>
     </div>
 
     <!-- PAGE 6 — CITY RANKING -->
-    <div class="section">
+    <div class="section" style="position:relative;">
+        <h2 style="position:absolute;top:3.2rem;left:0.75rem;z-index:10;font-size:clamp(1.1rem,1.8vw,1.6rem);font-weight:800;letter-spacing:-0.02em;color:var(--accent);">Regional Disparities</h2>
         <iframe src="page6_boxplots/6_boxplots.html" style="width:100%;height:100vh;border:none;display:block;"></iframe>
     </div>
 
@@ -474,42 +677,41 @@
         <div class="reasons-section">
             <div class="reasons-header">
                 <h2>Why the gaps?</h2>
-                <span class="reasons-subtitle">Exploring the factors contributing to monitoring disparities</span>
-                <p class="reasons-intro">The disparities in air quality monitoring are driven by a combination of factors, many of which are embedded in historical inequalities. The following three factors are the main contributors to the divides we see.</p>
+                <span class="reasons-subtitle">Exploring some of the factors contributing to monitoring disparities</span>
             </div>
             <div class="reasons-columns">
                 <div class="reason-col">
                     <div class="col-label"><span class="col-label-icon" style="mask-image:url(images/political.svg);-webkit-mask-image:url(images/political.svg)"></span>Political</div>
-                    <p class="reason-text">South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance...</p>
+                    <p class="reason-text">Political factors influence the monitoring of many environmental risks, especially air quality. Democratic countries are often more <span class="hl">proactive</span> about introducing or permitting independent air quality monitoring, while less democratic systems often <span class="hl">restrict data monitoring and transparency</span> to avoid social unrest.</p>
                     <div class="case-study-name">Political tensions - North and South Korea</div>
                     <div class="map-wrapper">
                         <button class="info-btn" aria-label="More information">i</button>
                         <div class="info-overlay">
-                            <p>South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance.</p>
+                            <p><span class="hl">South Korea</span> operates one of the world's most <span class="hl">transparent and effective</span> monitoring networks (AirKorea) in the world - with 88% of its population within 5km of an air quality sensor. On the other side of the border, <span class="hl">North Korea</span> treats internal environmental data as a <span class="hl">state secret</span> and <span class="hl">restricts international cooperation</span>. These political views are reflected in the lack of the infrastructure for air quality monitoring sensing - with only one sensor across the entire country.</p>
                         </div>
                         <iframe class="reason-map" src="page7_reasons/political.html"></iframe>
                     </div>
                 </div>
                 <div class="reason-col">
                     <div class="col-label"><span class="col-label-icon" style="mask-image:url(images/policy.svg);-webkit-mask-image:url(images/policy.svg)"></span>Policy</div>
-                    <p class="reason-text">South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance...</p>
+                    <p class="reason-text">Policy acts as a primary catalyst for air quality monitoring by establishing the legal frameworks that <span class="hl">mandate data collection</span>. When cities implement stringent <span class="hl">regulatory standards</span> (such as WHO guidelines), they create <span class="hl">regulatory pressure</span> that necessitates dense sensor networks to ensure compliance and track pollution disparities.</p>
                     <div class="case-study-name">Policy-driven monitoring - Chicago</div>
                     <div class="map-wrapper">
                         <button class="info-btn" aria-label="More information">i</button>
                         <div class="info-overlay">
-                            <p>Chicago benefits from a dense, well-funded sensor network embedded across its neighbourhoods. Cairo, one of the world's most air-polluted cities, has comparatively sparse monitoring infrastructure. What we can't see, we can't act on.</p>
+                            <p>The <span class="hl">Clean Air Act</span> establishes the national health standards that apply across the entire United States, and requires cities to monitor air quality according to federal rules to ensure compliance. The <span class="hl">Open Air Chicago</span> initiative fulfills these mandates by placing over 270 sensors in neighborhoods to track pollution levels at a local scale - specifically targeting monitoring in areas historically impacted by industrial zones.</p>
                         </div>
                         <iframe class="reason-map" src="page7_reasons/policy.html"></iframe>
                     </div>
                 </div>
                 <div class="reason-col">
-                    <div class="col-label"><span class="col-label-icon" style="mask-image:url(images/wifi.svg);-webkit-mask-image:url(images/wifi.svg)"></span>Infrastructure</div>
-                    <p class="reason-text">South Korea has the best sensor coverage in the world, with 88% of the population living within 5 km of an air quality sensor. Just next door, North Korea has none. The border between these two countries represents one of the starkest data divides on Earth — driven not by geography, but by governance...</p>
-                    <div class="case-study-name">Limited connectivity - Africa</div>
+                    <div class="col-label"><span class="col-label-icon" style="mask-image:url(images/wifi.svg);-webkit-mask-image:url(images/wifi.svg)"></span>Infrastructure & economic</div>
+                    <p class="reason-text">Infrastructural and economic barriers significantly limit sensor distribution. Global datasets like AQICN require data from <span class="hl">'reference' stations</span> that cost up to $120,000 and <span class="hl">require stable power</span> for hourly measurements and data updates - something many cities lack. While low-cost sensors offer an alternative, they remain scientifically invalid in many global datasets unless they are co-located with reference stations for weeks to calibrate them.</p>
+                    <div class="case-study-name">Limited connectivity & funding - Africa</div>
                     <div class="map-wrapper">
                         <button class="info-btn" aria-label="More information">i</button>
                         <div class="info-overlay">
-                            <p>Regions in Africa are among the most populated in the world, but little air measurement data is available. This is largely due to economic and infrastructure constraints — sensors are expensive to procure, maintain and calibrate.</p>
+                            <p>These constraints are particularly apparent in Africa - with the continent receiving only <span class="hl">3.7% of global international development funding</span> for air quality between 2015 and 2021. Many sensors installed in African cities go <span class="hl">dark within a year</span> due to frequent <span class="hl">power load-shedding, unreliable Wi-Fi</span>, and the extreme difficulty of sourcing replacement parts from overseas.</p>
                         </div>
                         <iframe class="reason-map" src="page7_reasons/economic.html"></iframe>
                     </div>
@@ -522,7 +724,7 @@
         <div class="intro-wrap">
             <h2>Reflection</h2>
                         <h3>Understanding inequalities in monitoring</h3>
-            <div class="paragraph-main" style="font-size: 1rem; line-height: 1.8;">
+            <div class="paragraph-main">
                 <p>
                     The clearest finding across this project is that air quality inequality is not simply a pollution problem, 
                     it is a data and infrastructure problem.
@@ -555,15 +757,130 @@
         </div>
     </div>
 
-    <!-- PAGE 9 — REFERENCES -->
+    <!-- PAGE 9 — REFERENCES & TEAM -->
     <div class="section">
-        <iframe src="page9_references/9_references.html" style="width:100%;height:100vh;border:none;display:block;"></iframe>
+        <div class="refs-wrap">
+
+            <h2 class="page-title">About the page</h2>
+
+            <div class="body-columns">
+
+                <!-- Left: Data Sources -->
+                <div class="col" style="flex:2.5">
+                    <div class="sub-heading">Data Sources</div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Owner</th>
+                                <th>Dataset</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>AQICN</td>
+                                <td><a href="https://aqicn.org/json-api/doc/" target="_blank">Air Sensor Points</a></td>
+                                <td>Point locations of air sensors globally — accessed via the AQICN API</td>
+                            </tr>
+                            <tr>
+                                <td>GeoBoundaries</td>
+                                <td><a href="https://www.geoboundaries.org/globalDownloads.html" target="_blank">Country Boundaries</a></td>
+                                <td>Polygons of country boundaries globally</td>
+                            </tr>
+                            <tr>
+                                <td>European Commission Joint Research Centre</td>
+                                <td><a href="https://human-settlement.emergency.copernicus.eu/download.php?ds=pop" target="_blank">GHS Gridded Population</a></td>
+                                <td>Gridded raster layer of global population density</td>
+                            </tr>
+                            <tr>
+                                <td>European Commission Joint Research Centre</td>
+                                <td><a href="https://human-settlement.emergency.copernicus.eu/ghs_ucdb_2024.php" target="_blank">GHS Urban Centres Data Base</a></td>
+                                <td>Polygons of Urban Centres (cities) globally</td>
+                            </tr>
+                            <tr>
+                                <td>NASA Earth Data</td>
+                                <td><a href="https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-sdei-gwrpm25-mmsvaod-5gl04-5.04" target="_blank">Global Annual PM2.5 Grids</a></td>
+                                <td>Annual PM2.5 raster data from 1998-2022 at global level</td>
+                            </tr>
+                            <tr>
+                                <td>Chicago Health Atlas</td>
+                                <td><a href="https://chicagohealthatlas.org/indicators/PMC?tab=map" target="_blank">Chicago PM2.5 per census tract</a></td>
+                                <td>Annual average PM2.5 (µg/m³) per Census Tract in Chicago</td>
+                            </tr>
+                            <tr>
+                                <td>US Census Bureau</td>
+                                <td><a href="https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-illinois-census-tract" target="_blank">Illinois Census Tract boundaries</a></td>
+                                <td>Illinois Census Tract boundaries</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Right: Research Sources -->
+                <div class="col">
+                    <div class="sub-heading">Research Sources</div>
+                    <ul style="list-style:none;display:flex;flex-direction:column;gap:0.5rem;font-size:clamp(0.78rem,1vw,0.92rem);color:rgba(255,255,255,0.8);line-height:1.5;">
+                        <li>Open Air Chicago (<a href="https://www.chicago.gov/city/en/depts/cdph/supp_info/Environment/open-air-chicago.html" target="_blank" style="color:var(--accent);text-decoration:none;">website</a>)</li>
+                        <li>ETH Zurich Air Quality Research (<a href="https://www.research-collection.ethz.ch/server/api/core/bitstreams/f75e5fde-d440-4979-b4ac-c6a012f2b0e5/content" target="_blank" style="color:var(--accent);text-decoration:none;">paper</a>)</li>
+                        <li>Assessment of Air Quality in North Korea from Satellite Observations (<a href="https://www.researchgate.net/publication/366453707_Assessment_of_Air_Quality_in_North_Korea_from_Satellite_Observations" target="_blank" style="color:var(--accent);text-decoration:none;">paper</a>)</li>
+                        <li>Air Sensor Performance Targets and Testing Protocols (<a href="https://www.epa.gov/air-sensor-toolbox/air-sensor-performance-targets-and-testing-protocols" target="_blank" style="color:var(--accent);text-decoration:none;">guide</a>)</li>
+                        <li>AirQo African Cities (<a href="https://www.airqo.africa/solutions/african-cities" target="_blank" style="color:var(--accent);text-decoration:none;">website</a>)</li>
+                        <li>Air Pollution — Our World in Data (<a href="https://ourworldindata.org/air-pollution" target="_blank" style="color:var(--accent);text-decoration:none;">article</a>)</li>
+                        <li>2023 World Air Quality Report (report)</li>
+                        <li>Why Open Data? — OpenAQ (<a href="https://openaq.org/why-open-data/" target="_blank" style="color:var(--accent);text-decoration:none;">article</a>)</li>
+                        <li>Air Quality Funding Report (<a href="https://drive.usercontent.google.com/download?id=1FOd2k3nxCmfKzuErGtVHpLjxIEkW6eSH&authuser=0&acrobatPromotionSource=gdrive_chrome-grid" target="_blank" style="color:var(--accent);text-decoration:none;">report</a>)</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Divider -->
+            <div class="team-divider"></div>
+
+            <!-- Team -->
+            <section class="team-section">
+                <div class="sub-heading">Our Team</div>
+
+                <div class="team-grid">
+
+                    <div class="member-card">
+                        <div class="avatar-ring">
+                            <img src="images/emily.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                        </div>
+                        <div class="member-name">Emily Dugmore<a class="github-link" href="https://github.com/emilydugmore" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+                    </div>
+
+                    <div class="member-card">
+                        <div class="avatar-ring">
+                            <div class="avatar-inner">TC</div>
+                        </div>
+                        <div class="member-name">Paul McNicholas<a class="github-link" href="https://github.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+                    </div>
+
+                    <div class="member-card">
+                        <div class="avatar-ring">
+                            <img src="images/santiago.JPG" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                        </div>
+                        <div class="member-name">Santiago Soubie<a class="github-link" href="https://github.com/SSoubie" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+                    </div>
+
+                </div>
+
+                <div class="refs-footer">
+                    <a class="github-btn" href="https://github.com/SSoubie/data_viz_air_quality_project" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                        Repository
+                    </a>
+                    <a class="github-btn" href="https://github.com/SSoubie/data_viz_air_quality_project/tree/main/methodologies" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                        Methodologies
+                    </a>
+                </div>
+            </section>
+
+        </div>
     </div>
 
-    <!-- PAGE 10 — AUTHORS -->
-    <div class="section">
-        <iframe src="page10_authors/10_authors.html" style="width:100%;height:100vh;border:none;display:block;"></iframe>
-    </div>
 
 </div>
 
