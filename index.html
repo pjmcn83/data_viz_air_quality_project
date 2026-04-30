@@ -110,9 +110,9 @@
             text-align: justify;
             padding: 3%;
             line-height: 1.75;
-            font-size: clamp(0.95rem, 1.25vw, 1.1rem);
+            font-size: clamp(0.78rem, 1.05vw, 1rem);
             overflow-y: auto;
-            max-height: 58vh;
+            max-height: clamp(48vh, 62vh, 68vh);
         }
 
         .paragraph-main p { margin-bottom: 1.2em; }
@@ -132,7 +132,7 @@
         .map-frame { flex: 1; border: none; display: block; }
 
         .sidebar {
-            width: 360px;
+            width: clamp(320px, 26vw, 380px);
             min-width: 320px;
             background: var(--bg);
             padding: 3rem 3.5rem 3rem 0;
@@ -145,7 +145,7 @@
         }
 
         .sidebar .sidebar-title {
-            font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+            font-size: clamp(0.9rem, 1.3vw, 1.3rem);
             font-weight: 800;
             letter-spacing: -0.02em;
             color: var(--accent);
@@ -153,14 +153,14 @@
         }
 
         .sidebar .sidebar-subtitle {
-            font-size: clamp(0.85rem, 1.3vw, 1.1rem);
+            font-size: clamp(0.75rem, 1vw, 0.95rem);
             font-weight: 400;
             color: #ffffff;
             margin-bottom: 0.6rem;
         }
 
         .sidebar p {
-            font-size: clamp(1rem, 1.4vw, 1.2rem);
+            font-size: clamp(0.78rem, 1.1vw, 1rem);
             line-height: 1.75;
             color: #ffffff;
             text-align: justify;
@@ -574,6 +574,7 @@
     <a href="#reasons">Explore Reasons</a>
     <a href="#reflection">Reflection</a>
     <a href="#references">About</a>
+    <a href="#authors">Team</a>
 </nav>
 
 
@@ -582,7 +583,7 @@
     <!-- PAGE 1 — LANDING -->
     <div class="section">
         <div class="landing">
-            <h1>Investigating Global Disparities in Air Quality Sensors</h1>
+            <h1>Investigating Global Disparities in Air Quality Monitoring</h1>
             <div class="scroll-cue">
                 <span>Scroll to explore</span>
                 <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
@@ -599,7 +600,7 @@
                 <p>
                 Air pollution is one of the most the most serious <span class="hl">environmental threats</span> to human
                 health, causing an estimated seven million premature deaths worldwide each year. However, the
-                most dangerous of these pollutants are particualte matter with a diameter  smaller than 2.5 micrometers - <span
+                most dangerous of these pollutants are particulate matter with a diameter  smaller than 2.5 micrometers - <span
                     class="hl">PM2.5</span> - which leads to the exacerbation of numerous health conditions and the
                 impairment of cognitive development in children.
             </p>
@@ -633,8 +634,18 @@
                     <div class="sidebar-title">PM2.5 Trends</div>
                     <div class="sidebar-subtitle">How has air quality changed over time?</div>
                 </div>
-                <p>From 1998 to 2022, improvements in PM2.5 concentrations are seen for much of the Global North. This is contrasted with <span class="hl">persistently high or worsening concentrations across the Global South</span> that frequently exceed WHO thresholds - particularly through West and South Asia, South America, and Africa.</p>
-                <p>Whilst <em>remotely sensed pollutant concentrations</em> provide vast geographical/temporal reach, it remains a necessity to monitor ground level data to fully understand the air quality people experience at a local level.</p>
+                <p>
+                    From 1998 to 2022 improvements in PM2.5 concentrations are visible in the Global North. In contrast
+                    the Global South displays <span class="hl">persistently high or worsening concentrations</span> 
+                    that frequently exceed WHO thresholds.
+                </p>
+
+                <p>
+                    Whilst <span class="hl">remotely sensed pollutant concentrations</span> provide vast geographical and temporal reach, 
+                    it remains necessary to monitor at ground level to fully understand the air quality people experience at a 
+                    local level.
+                </p>
+
             </div>
         </div>
     </div>
@@ -725,33 +736,30 @@
             <h2>Reflection</h2>
                         <h3>Understanding inequalities in monitoring</h3>
             <div class="paragraph-main">
-                <p>
-                    The clearest finding across this project is that air quality inequality is not simply a pollution problem, 
-                    it is a data and infrastructure problem.
-                </p>
 
                 <p>
                     <span class="hl">PM2.5 satellite analysis</span> reveals that much of the Global South, particularly South America, 
-                    North and West Africa, South Asia, and parts of Southeast Asia, has seen concentrations remain persistently high or 
-                    worsen over 25 years, while wealthier regions have broadly improved. Yet as the sensor coverage mapping makes clear, 
-                    these are precisely the places where <span class="hl">ground level monitoring is most sparse</span>. The populations 
-                    most exposed to dangerous air quality are, in many cases, the least measured.
+                    Africa, South and West Asia have seen concentrations remain persistently high or worsen over 25 years 
+                    whilst wealthier regions have broadly improved. Sensor coverage mapping shows these are precisely the places where 
+                    <span class="hl">ground level monitoring is most sparse</span>. Meaning that populations most exposed to dangerous 
+                    air quality are often the least measured.
                 </p>
 
                 <p>
-                    The <span class="hl">Air Quality Vulnerability Index</span> brings this disparity into sharp focus at the city scale. 
-                    Cities like Cairo and Lagos carry a compounded burden — high pollution, dense populations, and minimal sensor 
-                    infrastructure — while well-monitored cities in North America, Europe, and South Korea benefit from the kind of data 
-                    that enables targeted intervention. The <span class="hl">Korea case</span> is particularly striking: governance, 
-                    not geography, explains why one of the world's most data-rich sensor networks ends precisely at a national border.
+                    The <span class="hl">City Vulnerability Index</span> brings this disparity into focus at the city scale. 
+                    Cities like Hyderabad and Cairo carry a compounded burden of <span class="hl">high pollution, dense populations, and minimal sensor 
+                    infrastructure</span>. On the other end of the scale well-monitored cities in North America and in Europe, such as Chicago 
+                    and Dublin, benefit from the kind of data that enables targeted intervention. The Korean case is particularly 
+                    interesting with governance, not geography, explaining why one of the world's most data-rich sensor networks ends 
+                    at the border with North Korea.
                 </p>
 
                 <p>
-                    The next steps are both technical and political. Expanding <span class="hl">low-cost sensor networks</span> in 
-                    undermonitored regions — particularly across sub-Saharan Africa and South Asia — would begin to close the data gap, 
-                    but sensor deployment alone is insufficient without investment in calibration, maintenance, and the institutional 
-                    capacity to act on findings. Ultimately, the disparities visualised here reflect broader inequalities in who gets to 
-                    define and respond to environmental risk. Addressing air quality monitoring gaps is a matter of <span class="hl">environmental justice</span>.
+                    Expanding <span class="hl">low-cost sensor networks</span> in undermonitored regions particularly across the Global South 
+                    would begin to close the data gap. However sensor deployment alone is insufficient without investment in costly calibration 
+                    and maintenance. Ultimately, the disparities identified reflect broader inequalities in who gets to define and respond to 
+                    environmental risk. Addressing air quality monitoring gaps is not just a scientific priority, it is a matter of 
+                    <span class="hl">environmental justice</span>.
                 </p>
             </div>
         </div>
@@ -812,6 +820,16 @@
                                 <td><a href="https://catalog.data.gov/dataset/tiger-line-shapefile-current-state-illinois-census-tract" target="_blank">Illinois Census Tract boundaries</a></td>
                                 <td>Illinois Census Tract boundaries</td>
                             </tr>
+                            <tr>
+                                <td>Uber Technologies</td>
+                                <td><a href="https://h3geo.org/" target="_blank">H3 Grid System</a></td>
+                                <td>Global hex grid used for raster data aggregation into vector cells</td>
+                            </tr>
+                            <tr>
+                                <td>Tune Inc.</td>
+                                <td><a href="https://h3geo.org/" target="_blank">pycountry-convert</a></td>
+                                <td>Python library for mapping ISO country codes to their respective continents</td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -835,49 +853,81 @@
             </div>
 
             <!-- Divider -->
-            <div class="team-divider"></div>
+        </div>
+    </div>
 
-            <!-- Team -->
-            <section class="team-section">
-                <div class="sub-heading">Our Team</div>
+    <!-- PAGE 10 — TEAM -->
+    <div class="section">
+        <div class="refs-wrap" style="align-items:center;justify-content:center;">
+            <h2 class="page-title">Our Team</h2>
+            <div class="team-grid" style="margin-bottom:2.5rem;">
 
-                <div class="team-grid">
-
-                    <div class="member-card">
-                        <div class="avatar-ring">
-                            <img src="images/emily.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                        </div>
-                        <div class="member-name">Emily Dugmore<a class="github-link" href="https://github.com/emilydugmore" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+                <div class="member-card">
+                    <div class="avatar-ring">
+                        <img src="images/emily.png" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
                     </div>
-
-                    <div class="member-card">
-                        <div class="avatar-ring">
-                            <div class="avatar-inner">TC</div>
-                        </div>
-                        <div class="member-name">Paul McNicholas<a class="github-link" href="https://github.com" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
+                    <div class="member-name">Emily Dugmore
+                        <a class="github-link" href="https://github.com/emilydugmore" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a class="github-link" href="https://www.linkedin.com/in/emily-dugmore" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;fill:currentColor;">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
                     </div>
-
-                    <div class="member-card">
-                        <div class="avatar-ring">
-                            <img src="images/santiago.JPG" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
-                        </div>
-                        <div class="member-name">Santiago Soubie<a class="github-link" href="https://github.com/SSoubie" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg></a></div>
-                    </div>
-
                 </div>
 
-                <div class="refs-footer">
-                    <a class="github-btn" href="https://github.com/SSoubie/data_viz_air_quality_project" target="_blank" rel="noopener">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                        Repository
+                <div class="member-card">
+                    <div class="avatar-ring">
+                        <img src="images/paul.jpg" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                    </div>
+                    <div class="member-name">Paul McNicholas
+                        <a class="github-link" href="https://github.com/pjmcn83" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
                     </a>
-                    <a class="github-btn" href="https://github.com/SSoubie/data_viz_air_quality_project/tree/main/methodologies" target="_blank" rel="noopener">
-                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                        Methodologies
-                    </a>
+                    <a class="github-link" href="https://www.linkedin.com/in/pjmcn83" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;fill:currentColor;">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                    </svg>
+                </a>
                 </div>
-            </section>
+                </div>
 
+                <div class="member-card">
+                    <div class="avatar-ring">
+                        <img src="images/santiago.JPG" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">
+                    </div>
+                    <div class="member-name">Santiago Soubie
+                        <a class="github-link" href="https://github.com/SSoubie" target="_blank" rel="noopener">
+                            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+                            </svg>
+                        </a>
+                        <a class="github-link" href="https://www.linkedin.com/in/ssoubiee" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;fill:currentColor;">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="refs-footer">
+                <a class="github-btn" href="https://github.com/SSoubie/data_viz_air_quality_project" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    Repository
+                </a>
+                <a class="github-btn" href="https://github.com/SSoubie/data_viz_air_quality_project/tree/main/methodologies" target="_blank" rel="noopener">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.38.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.54-1.38-1.33-1.75-1.33-1.75-1.09-.74.08-.73.08-.73 1.2.09 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.48 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 3-.4c1.02.005 2.04.14 3 .4 2.28-1.55 3.29-1.23 3.29-1.23.66 1.66.24 2.88.12 3.18.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.63-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58C20.56 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    Methodologies
+                </a>
+            </div>
         </div>
     </div>
 
@@ -896,7 +946,7 @@ new fullpage('#fullpage', {
     scrollingSpeed:     900,
     easingcss3:         'cubic-bezier(0.645, 0.045, 0.355, 1.000)',
     css3:               true,
-    anchors:            ['landing','introduction','pm25','measure','vulnerability','stats','reasons','reflection','references','authors'],
+    anchors:            ['landing','introduction','pm25','measure','vulnerability','stats','reasons','reflection','references','authors','team'],
     afterLoad: function (_origin, destination) {
         document.querySelectorAll('#top-nav a').forEach(a => a.classList.remove('active'));
         const active = document.querySelector('#top-nav a[href="#' + destination.anchor + '"]');
